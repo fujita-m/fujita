@@ -1,0 +1,25 @@
+## these files should be in clean: target in Makefile
+
+*.aux
+*.bak
+*.blg
+*.dvi
+*.idx
+*.ilg
+*.ind
+*.lnk
+*.lof
+*.log
+*.lot
+*.synctex
+*.toc
+*~
+
+## Should not be ignored, usually required for camera ready:
+
+# *.bbl
+# *.bb
+# *.pdf
+# *.xbb
+# *.tex
+# *.bib
