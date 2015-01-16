@@ -1,0 +1,172 @@
+% Created 2014-04-04 金 09:39
+\documentclass[fleqn, 14pt]{extarticle}
+                    \usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\tolerance=1000
+\subtitle{(2014年04月01日$\sim$2014年04月09日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室B4\\藤田 将輝}
+\date{2014年04月09日}
+\title{記録書　No.1}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+\begin{document}
+
+\maketitle
+\section{前回ミーティングからの指導・指摘事項}
+\label{sec-1}
+\begin{enumerate}
+\item 他人に対してのご指導やご指摘を自身への事としてとらえる．
+\newline
+\hfill
+[4/2, メール，乃村先生]
+\end{enumerate}
+\section{実績}
+\label{sec-2}
+\subsection{研究関連}
+\label{sec-2-1}
+\begin{enumerate}
+\item 研究テーマに関する項目
+\hfill
+\label{enum-research1}
+\begin{enumerate}
+\item Fedora14のインストール
+\hfill
+\label{enum-1-A}
+(100％，+100％)
+\item Linuxカーネルの再構築
+\hfill
+\label{enum-1-B}
+(100％，+100％)
+\item Linuxカーネルへのシステムコールの実装
+\hfill
+\label{enum-1-C}
+(0％，+0％)
+\item システムコールの実装の手順書作成
+\hfill
+\label{enum-1-D}
+(0％，+0％)
+\item Mintの構築
+\hfill
+\label{enum-1-E}
+(90％，+90％)
+\end{enumerate}
+\end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-2-2}
+\begin{enumerate}
+\item swlab懇親会
+\hfill
+\label{enum-laboratory1}
+(04/01)
+\item 平成26年度新B4向けGit勉強会
+\hfill
+\label{enum-laboratory2}
+(04/03)
+\item ミーティング兼花見
+\hfill
+\label{enum-laboratory3}
+(04/04)
+\end{enumerate}
+
+\subsection{大学・大学院関連}
+\label{sec-2-3}
+\begin{enumerate}
+\item 岡山大学 入学式
+\hfill
+\label{enum-university1}
+(04/08)
+\end{enumerate}
+
+\section{詳細および反省・感想}
+\label{sec-3}
+\subsection{研究関連}
+\label{sec-3-1}
+\begin{itemize}
+\item[(\ref{enum-1-A})]
+実験用PCにFedoraをインストールした．
+3つのハードディスクにそれぞれインストールすることができた．
+インストール手順について再確認する．
+\item[(\ref{enum-1-B})]
+MintのベースであるLinux-3.0.8をインストールした．
+OSの本体の部分であるbzImageについて理解を深める．
+\item[(\ref{enum-1-E})]
+Mintの構築を行っている．
+複数のOSを同時に起動できることが課題の達成となるが，
+3つ同時に起動することがまだできていない．
+3つの同時起動の成功を今後の課題とする．
+\end{itemize}
+
+\subsection{研究室関連}
+\label{sec-3-2}
+\begin{itemize}
+\item[(\ref{enum-laboratory2})]
+Git勉強会を行った.
+Gitへの理解を深められた.
+バージョン管理ツールは開発において重要な役割を果たすので
+,復習をしておく.
+\item[(\ref{enum-laboratory3})]
+ミーティングと花見を行った.
+ミーティングではこれからのミーティングの
+流れを理解した.
+花見では研究室の方々との親睦を深められた.
+
+\end{itemize}
+
+\section{今後の予定}
+\label{sec-4}
+\subsection{研究関連}
+\label{sec-4-1}
+\begin{enumerate}
+\item 研究テーマに関する項目
+\hfill
+\begin{enumerate}
+\item Mintの構築
+\hfill
+(04/10)
+\item Linuxカーネルへのシステムコールの実装
+\hfill
+(04/11)
+\item システムコールの実装手順書の作成
+\hfill
+(04/11)
+\end{enumerate}
+\end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-4-2}
+\begin{enumerate}
+\item クレオフーガさんとの交流会
+\hfill
+\label{enum-3}
+(04/18)
+\end{enumerate}
+
+\subsection{その他}
+\label{sec-5}
+配属したばかりで自分の知識の無さを実感するばかりだが,
+今後に向けてOSや英語の知識を養っていきたい.
+とてもいい環境に置かれているので積極的に学ぶようにする.
+上下関係やマナーについても身に着けていく事を目標とする.
+楽しみながら研究を進めていきたい.
+
+% Emacs 24.3.1 (Org mode 8.0.3)
+\end{document}

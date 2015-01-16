@@ -1,0 +1,227 @@
+\documentclass[fleqn, 14pt]{extarticle}
+                    \usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{comment}
+\tolerance=1000
+\subtitle{(2014年05月29日$\sim$2014年06月13日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室B4\\藤田 将輝}
+\date{2014年06月16日}
+\title{記録書 No.5}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+\begin{document}
+
+\maketitle
+
+
+
+
+\section{前回ミーティングからの指導・指摘事項}
+\label{sec-1}
+\begin{enumerate}
+\item 幹事をするときは，関係者全員と情報を共有する．
+\newline
+\hfill
+[5/29, 乃村研ミーティング，乃村先生]
+\end{enumerate}
+
+
+
+
+\section{実績}
+\label{sec-2}
+
+
+\subsection{研究関連}
+\label{sec-2-1}
+\begin{enumerate}
+\item 研究テーマに関する項目
+\hfill
+\label{enum-research1}
+\begin{enumerate}
+
+\item IPI送受信の確認
+\hfill
+\label{enum-1-A}
+(100％，+20％)
+\item 参考文献の読解
+\hfill
+\label{enum-1-B}
+(40％，+20％)
+\end{enumerate}
+\item 開発に関する項目
+\hfill
+\label{enum-research2}
+\begin{enumerate}
+
+\item 自動ビルドスクリプトの作成
+\hfill
+\label{enum-2-A}
+(90％，+α％)
+\end{enumerate}
+
+\item 第252回New打ち合わせ
+\hfill
+\label{enum-laboratory2}
+(06/06)
+\item 第5回Newグループ開発打ち合わせ
+\hfill
+\label{enum-laboratory3}
+(06/11)
+
+\end{enumerate}
+
+
+\subsection{研究室関連}
+\label{sec-2-2}
+
+\begin{enumerate}
+\item 乃村研ミーティング
+\hfill
+\label{enum-laboratory1}
+(05/29)
+\item もくもく会
+\hfill
+\label{enum-laboratory4}
+(06/11)
+\end{enumerate}
+
+\subsection{大学・大学院関連}
+\label{sec-2-3}
+
+\begin{enumerate}
+\item 情報化における職業
+\hfill
+\label{enum-univ1}
+(05/30)
+\item カレッジTOEIC
+\hfill
+\label{enum-univ2}
+(05/31)
+\end{enumerate}
+
+
+
+
+
+\section{詳細および反省・感想}
+\label{sec-3}
+\subsection{研究関連}
+\label{sec-3-1}
+
+\begin{itemize}
+\item[(\ref{enum-1-B})]
+山本さんの特別研究報告の参考文献の1つである「SMPを活用した \\
+Primary/Backupモデルによるリプレイ環境の構築」[1]を読解した．
+仮想マシンモニタを用いたPrimary/BackupモデルによるOSのデバッグ方法を理解できた．
+Primary/Backupモデルとは2つのOSをそれぞれPrimaryとBackupに割り当て，
+これらを時間差を設けて同じ処理を実行することにより，BackupがPrimaryの動作の再現をするモデルである．
+PrimaryとBackupを同一の状態にするために割り込みタイミングや，処理の実行結果を
+PrimaryからBackupに通知する仕組みが参考になった．
+参考文献はあと3つある．
+今後，自分の研究に活かせる部分はないかを意識して，論文を読解する．
+
+\item[(\ref{enum-2-A})]
+コードに変更があったカーネルをビルドし，再起動した際にビルドしたカーネルを選択して起動し，
+起動に失敗すれば，もとのカーネルにロールバックするスクリプトを作成している．
+再起動するまでは成功したが，失敗した場合のロールバック機能が実装できていない．
+グラブの機能にfallbackという機能があるため，これを使って実装する．
+
+\end{itemize}
+
+\subsection{研究室関連}
+\label{sec-3-2}
+\begin{itemize}
+\item[(\ref{enum-laboratory4})]
+もくもく会に参加した．
+もくもく会とは参加者が集まって黙々と各自の作業をする会である．
+私は論文の読解をした．
+いつもとは違う環境であったため，新鮮な感覚で作業ができた．
+
+\end{itemize}
+
+
+
+
+
+
+\section{今後の予定}
+\label{sec-4}
+\subsection{研究関連}
+\label{sec-4-1}
+
+\begin{enumerate}
+\item 研究テーマに関する項目
+\hfill
+\begin{enumerate}
+
+
+\item 参考文献の読解
+\hfill
+(06/30)
+
+\end{enumerate}
+\item 開発に関する項目
+\hfill
+\begin{enumerate}
+
+\item 自動ビルドスクリプトの作成
+\hfill
+(06/27)
+
+\end{enumerate}
+\item 第253回New打ち合わせ
+\hfill
+\label{enum-3}
+(06/18)
+\item 第6回Newグループ開発打ち合わせ
+\hfill
+\label{enum-7}
+(06/27)
+\end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-4-2}
+
+\begin{enumerate}
+
+\item 平成26年度M2論文紹介
+\hfill
+\label{enum-5}
+(06/20)
+\item 乃村研ミーティング
+\hfill
+\label{enum-6}
+(06/26)
+
+\end{enumerate}
+
+
+
+
+\section{参考文献}
+\renewcommand{\labelenumi}{[\arabic{enumi}]}
+\begin{enumerate}
+\item 川崎仁，追川修一：SMP を利用したPrimary/Backup モデルによるリプレイ環境の構
+築，情報処理学会研究報告，Vol.2010-OS-113，No.12，pp.1-8(2010)．
+\end{enumerate}
+
+\end{document}

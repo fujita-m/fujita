@@ -1,0 +1,205 @@
+\documentclass[fleqn, 14pt]{extarticle}
+\usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{comment}
+\tolerance=1000
+\subtitle{(2014年10月07日$\sim$2014年10月16日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室B4\\藤田 将輝}
+\date{2014年10月17日}
+\title{記録書 No.11}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+\begin{document}
+
+\maketitle
+
+
+
+
+\section{前回ミーティングからの指導・指摘事項}
+\label{sec-1}
+\begin{enumerate}
+\item 特になし
+\newline
+\hfill
+
+\end{enumerate}
+
+
+
+
+\section{実績}
+\label{sec-2}
+
+\subsection{研究関連}
+\label{sec-2-1}
+\begin{enumerate}
+\item 研究テーマに関する項目
+\hfill
+\label{enum-research1}
+\begin{enumerate}
+
+\item 参考文献の読解
+\hfill
+\label{enum-1-A}
+(50％，+0％)
+\item 使用する共有メモリ領域の検討
+\hfill
+\label{enum-1-B}
+(55％，+0％)
+\item 特別研究中間報告の題目と概要の検討
+\hfill
+\label{enum-1-C}
+(100％，+100％)
+\item NICのデバイスドライバの改変箇所の調査
+\hfill
+\label{enum-1-D}
+(20％，+20％)
+\end{enumerate}
+\item 開発に関する項目
+\hfill
+\label{enum-research2}
+\begin{enumerate}
+
+\item 自動ビルドスクリプトの作成
+\hfill
+\label{enum-2-A}
+(95％，+α％)
+\end{enumerate}
+
+\item 第12回New開発打ち合わせ
+\hfill
+\label{enum-3}
+(10/07)
+\item 第262回New打ち合わせ
+\hfill
+\label{enum-4}
+(10/16)
+
+
+
+\end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-2-2}
+\begin{enumerate}
+\item 特になし
+\hfill
+\end{enumerate}
+\subsection{大学・大学院関連}
+\label{sec-2-3}
+
+\begin{enumerate}
+\item 特になし
+\hfill
+\label{enum-univ2}
+\end{enumerate}
+
+
+
+
+
+\section{詳細および反省・感想}
+\label{sec-3}
+\subsection{研究関連}
+\label{sec-3-1}
+
+\begin{itemize}
+\item[(\ref{enum-1-C})]
+特別研究中間報告(以下中間発表)の題目をと概要を決定した．
+題目は「Mintオペレーティングシステムを用いたNICドライバの割り込みデバッグ手法の実現」に決定した．
+今後は中間発表に向けてスライドを作成する．
+\item[(\ref{enum-1-D})]
+割り込み先OSの占有するコアがIPIを受信すると動作し，NICのデバイスドライバがMintの共有メモリからパケットを取得する割り込みハンドラ
+を作成している．
+これにはNICドライバを改変する必要があるため，NICドライバのソースコードを読解している．
+具体的にはNICのデバイスドライバがパケットを取得する際のバッファのアドレスを変更することで実現しようと考えている．
+まだどの関数でどのように受け渡しているかを特定できていない．
+今後は引き続きNICのデバイスドライバのソースコードを読解し，改変すべき関数を特定する．
+\end{itemize}
+
+\section{今後の予定}
+\label{sec-4}
+\subsection{研究関連}
+\label{sec-4-1}
+
+\begin{enumerate}
+\item 研究テーマに関する項目
+\hfill
+\begin{enumerate}
+
+
+\item 参考文献の読解
+\hfill
+(10/23)
+
+\item 使用する共有メモリ領域の検討
+\hfill
+(10/24)
+
+\item NICのデバイスドライバの改変箇所の調査
+\hfill
+(10/23)
+
+\end{enumerate}
+\item 開発に関する項目
+\hfill
+\begin{enumerate}
+
+\item 自動ビルドスクリプトの作成
+\hfill
+(10/27)
+
+\end{enumerate}
+\item 第13回Newグループ開発打ち合わせ
+\hfill
+\label{enum-7}
+(10/22)
+\end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-4-2}
+
+\begin{enumerate}
+
+\item 平成26年度第2回研究室内部屋別対抗ボウリング大会
+\hfill
+\label{enum-10}
+(10/17)
+\item M1論文紹介
+\hfill
+\label{enum-11}
+(10/30)
+\item 乃村研ミーティング
+\hfill
+\label{enum-11}
+(11/4)
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+\end{document}

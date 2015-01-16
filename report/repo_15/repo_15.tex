@@ -1,0 +1,248 @@
+\documentclass[fleqn, 14pt]{extarticle}
+\usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{comment}
+\tolerance=1000
+\subtitle{(2014年11月23日$\sim$2014年12月18日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室B4\\藤田 将輝}
+\date{2014年12月19日}
+\title{記録書 No.15}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+\begin{document}
+\maketitle
+\section{前回ミーティングからの指導・指摘事項}
+\label{sec-1}
+\begin{enumerate}
+\item 特になし
+\newline
+\hfill
+
+\end{enumerate}
+
+
+
+
+\section{実績}
+\label{sec-2}
+
+\subsection{研究関連}
+\label{sec-2-1}
+\begin{enumerate}
+    \item 研究テーマに関する項目
+    \hfill
+    \label{enum-research1}
+    \begin{enumerate}
+
+        \item 参考文献の読解
+        \hfill
+        \label{enum-1-A}
+        (50％，+0％)
+        \item 使用する共有メモリ領域の検討
+        \hfill
+        \label{enum-1-B}
+        (75％，+20％)
+        \item NICのデバイスドライバの改変箇所の調査
+        \hfill
+        \label{enum-1-C}
+        (50％，+20％)
+        \item NICドライバの改変
+        \hfill
+        \label{enum-1-D}
+        (50％，+20％)
+        \item 特別研究報告書
+        \hfill
+        \label{enum-1-E}
+        (10％，+10％)
+
+    \end{enumerate}
+    \item 開発に関する項目
+    \hfill
+    \label{enum-research2}
+    \begin{enumerate}
+
+        \item 自動ビルドスクリプトの作成
+        \hfill
+        \label{enum-2-A}
+        (95％，+0％)
+        \item debianでのMintの構築
+        \hfill
+        \label{enum-2-A}
+        (50％，+50％)
+    \end{enumerate}
+    \item 第265回New打ち合わせ 
+    \hfill
+    \label{enum-research3}
+    (11/25)
+    \item 第15回Newグループ開発打ち合わせ
+    \hfill
+    \label{enum-research4}
+    (12/1)
+    \item 第266回New打ち合わせ
+    \hfill
+    \label{enum-research5}
+    (12/12)
+    \item 第16回Newグループ開発打ち合わせ
+    \hfill
+    \label{enum-research6}
+    (12/17)   
+
+\end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-2-2}
+\begin{enumerate}
+\item 乃村研究室忘年会
+\hfill
+\label{enum-lab1}
+(11/23)
+\item 卒論修論執筆環境構築bootcamp
+\hfill
+\label{enum-lab3}
+(11/26)
+\item SWLAB忘年会
+\hfill
+\label{enum-lab2}
+(12/05)
+\end{enumerate}
+
+
+\section{詳細および反省・感想}
+\label{sec-3}
+%\setcounter{subsection}{1}
+\subsection{研究関連}
+\label{sec-3-1}
+
+\begin{itemize}
+\item[(\ref{enum-1-D})]
+    NICドライバがMintの共有メモリからパケットを取得可能にするため，
+    NICドライバを改変している．
+    具体的には，NICドライバが受信バッファのアドレスを決定する関数を特定し，
+    その関数内で，受信バッファのアドレスをMintの共有メモリとした．
+    これにより，共有メモリを受信バッファとみなすことが可能になった．
+\end{itemize}
+
+
+\section{今後の予定}
+\label{sec-4}
+\subsection{研究関連}
+\label{sec-4-1}
+
+\begin{enumerate}
+\item 研究テーマに関する項目
+\hfill
+\begin{enumerate}
+
+
+\item 参考文献の読解
+\hfill
+(1/10)
+
+\item 使用する共有メモリ領域の検討
+\hfill
+(1/10)
+
+\item NICのデバイスドライバの改変箇所の調査
+\hfill
+(1/10)
+
+\item NICドライバの改変
+\hfill
+(1/20)
+
+\item 特別研究報告書 
+\hfill
+(2/1)
+
+
+\end{enumerate}
+\item 開発に関する項目
+\hfill
+\begin{enumerate}
+
+\item 自動ビルドスクリプトの作成
+\hfill
+(1/10)
+
+\item debianでのMintの構築
+\hfill
+(1/10)
+
+\end{enumerate}
+\item 第267回New打ち合わせ
+\hfill
+\label{enum-7}
+(12/19)
+\item 第17回Newグループ開発打ち合わせ
+\hfill
+\label{enum-8}
+(2/16)
+\end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-4-2}
+
+\begin{enumerate}
+
+
+\item 全体ミーティング
+\hfill
+\label{enum-12}
+(12/19)
+
+\item OICT3周年記念シンポジウム
+\hfill
+\label{enum-13}
+(12/19)
+
+\item 納会
+\hfill
+\label{enum-14}
+(12/25)
+
+\item 乃村研ミーティング
+\hfill
+\label{enum-15}
+(1/05)
+
+\item 書初め 
+\hfill
+\label{enum-16}
+(1/05)
+
+\end{enumerate}
+
+\subsection{大学関連}
+\begin{enumerate}
+\item 特になし
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

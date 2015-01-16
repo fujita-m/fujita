@@ -1,0 +1,4 @@
+nkf -e no2.tex > no2.tex
+platex no2.tex
+dvipdfmx no2.dvi
+acroread no2.pdf
