@@ -1,0 +1,129 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\LARGE IPIを送信するシステムコール実装について}
+\end{center}
+
+\begin{flushright}
+  2015/3/3\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+新B4課題の(課題3)IPIを送信するシステムコールの実装と実装手順書作成
+について，
+IPIを送信するシステムコールについては新B4が各自実装し，
+動作させる．
+動作確認をする割り込みハンドラについては予めソースを用意する．
+本資料では用意する割り込みハンドラと，割り込みハンドラ登録のシステムコール
+について記述する．
+\section{割り込みハンドラ}\label{interrupt_handler}
+IPIの送信に成功したことを確認するために，新たに割り込みハンドラを
+作成する．
+今回作成した割り込みハンドラは，IPIを受信するとメッセージを
+カーネルのメッセージバッファに
+格納する機能を持つ．
+作成した割り込みハンドラについて以下に示す．
+\begin{description}
+    \item[【形式】]irqreturn_t message_handler(int irq, void *dev)
+    \item[【引数】]int irq: 割り込みハンドラを登録するIRQ番号
+        void *dev_id: デバイスID
+    \item[【戻り値】]IRQ_HANDLED
+    \item[【機能】]printk()を呼び出し，カーネルのメッセージバッファに
+        「Recieved IPI」と表示する．
+\end{description}
+\section{割り込みハンドラの登録}
+\ref{interrupt_handler}章の割り込みハンドラを使用可能にするために，
+割り込みハンドラを割り込みハンドラ管理テーブルに登録する．
+割り込みハンドラを登録するシステムコールを作成し，
+使用することで，\ref{interrupt_handler}章で作成した
+割り込みハンドラを登録する．
+以下に，割り込みハンドラを登録するシステムコールについて記述する．
+\begin{description}
+    \item[【形式】]
+        asmlinkage int request_ipi_irq(int vector)
+    \item[【引数】]
+        int vector: ベクタ番号
+    \item[【戻り値】]
+        成功: 割り込みハンドラを登録したIRQ番号\\
+        失敗: -1\\
+    \item[【機能】]
+        登録可能なIRQ番号のirqを探し，irqに割り込みハンドラ
+        message_handlerを登録する．
+        その後，各コアのベクタ表vector_irqのベクタ番号vectorのエントリに
+        irqを登録する．
+\end{description}
+
+\section{割り込みハンドラ登録までの流れ}
+\subsection{システムコールの登録}
+割り込みハンドラを登録するシステムコールを登録する．
+システムコールの登録手順の例を以下に示す．
+\begin{enumerate}
+    \item ipi_syscall.cのコピー\\
+        /home/fujita/git/linux-3.17.0/arch/x86/kernel にipi_syscall.c
+        をコピーする．
+    \item システムコールの登録\\
+        資料<249-06>を参考に，システムコールmessage_handler()を
+        登録する．
+        
+\end{enumerate}
+\subsection{割り込みハンドラの登録}
+割り込みハンドラの登録手順の例を以下に示す．
+\begin{enumerate}
+    \item request_ipi.cのコピー\\
+        任意のディレクトリにrequest_ipi.cをコピーする．
+    \item request_ipi.cのコンパイル\\
+        request_ipi.cをコンパイルする．
+        実行例を以下に示す．
+        \begin{verbatim}
+        $ gcc request_ipi.c -o request_ipi
+        \end{verbatim}
+    \item request_ipiの実行\\
+        引数を指定し，割り込みハンドラを登録する．実行例を以下に示す．
+        \begin{verbatim}
+        $ ./request_ipi 309 100
+        \end{verbatim}
+        割り込みハンドラ登録時の引数の通番，引数の意味，
+        および実行例における引数の値を表\ref{hikisu}に示す．
+        \begin{table}
+            \centering
+            \begin{tabular}{l|l|l} \hline
+                通番&引数の意味                                   &実行例のおける引数の値 \hline
+                1   &request_ipi_irq()を登録したシステムコール番号&309
+                2   &割り込みハンドラを登録するベクタ番号         &100 \hline
+            \end{tabular}
+            \caption{hikisu}
+            \label{hikisu}
+        \end{table}
+\end{enumerate}
+\section{おわりに}
+本資料では，新B4課題の(課題3)IPIを送信するシステムコールの実装と実装手順書の作成
+について記述した．
+具体的には，IPI送信の成功を確認するための割り込みハンドラを登録する手順を示した．
+\end{document}
+
+

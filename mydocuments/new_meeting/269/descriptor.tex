@@ -1,0 +1,137 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\LARGE 受信ディスクリプタの更新}
+\end{center}
+
+\begin{flushright}
+  2015/1/19\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+NICの受信バッファは1つ1つに受信バッファの情報を持つ受信ディスクリプタ
+を持っている．
+また，受信ディスクリプタは管理している受信バッファがパケットを保持しているか
+否かの状態(以下，受信状態)を持っている．
+本資料では受信ディスクリプタを共有メモリに配置することにより，
+デバッグ支援OSが受信ディスクリプタを参照できるようになり，
+受信状態を書き換えられたことを示す．
+NICはパケットを受信すると受信バッファにパケットを格納し，
+受信状態を受信済みの状態に書き換える．
+本研究のデバッグ支援機構ではNICを用いずにパケットの
+受け渡しを行うため，この受信状態をシステムコールによって
+書き換える．
+\section{実験環境}
+実験環境は表1のようになっている．
+\begin{table}[htbp]
+\caption{実験環境}
+\label{kankyou}
+\begin{center}
+\begin{tabular}{|l|l|}   \hline 
+項目名      & 環境    \\ \hline \hline
+OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ \hline
+CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ \hline
+NICドライバ & RTL8169    \\ \hline
+           
+\end{tabular}
+\end{center}
+\end{table}
+
+\section{進捗状況}
+本実験を経た進捗状況について表2に示し以下で説明する．
+本実験で可能になったことは以下の2つである．
+\begin{enumerate}
+    \item 受信ディスクリプタを共有メモリ上に配置\\
+        NICの受信バッファの状態を管理する受信ディスクリプタ
+        を共有メモリに配置し，デバッグ支援OS，および
+        デバッグ対象OSで参照可能になった．
+    \item 受信ディスクリプタ中の受信状態の書き換え\\
+        デバッグ支援OSが受信ディスクリプタを取得し，
+        受信状態を書き換えられるようになった．
+\end{enumerate}
+
+\begin{table}[htbp]
+\caption{進捗状況}
+\label{kankyou}
+\begin{center}
+\begin{tabular}{l|l}   \hline 
+項目名                          & 進捗状況    \\  \hline
+デバッグ支援機構の作成          & 70\% +50\%  \\ 
+IPIの送信                       & 100\% +0\% \\ 
+割り込みハンドラの作成          & 100\% +20\%    \\ 
+           
+\end{tabular}
+\end{center}
+\end{table}
+
+\section{受信ディスクリプタ}\label{descriptor}
+NICの受信バッファは1つ1つに受信バッファ
+の状態を保持している受信ディスクリプタ持っている．
+この受信ディスクリプタ中に
+受信状態を持っているビットがある．
+NICがパケットを受け取ると受信バッファにパケットを格納し，
+受信状態を示すビットを書き換える．
+NICドライバは受信処理をする際に受信ディスクリプタの受信状態を
+確認し，受信状態が受信済みであれば受信ディスクリプタから
+受信バッファのアドレスを取得し，受信バッファからパケットを取得する．
+
+\section{変更点}
+本研究のデバッグ支援環境ではデバッグ支援OSとデバッグ対象OS間で
+NICを用いずにパケットを受け渡す．
+このため\ref{descriptor}章で述べた受信状態の書き換えを
+デバッグ支援OSで行う必要がある．
+デバッグ支援OSが受信状態の書き換えが行えるようにするため，
+受信ディスクリプタをMintの共有メモリに配置した．
+受信状態を書き換える流れを以下に示す．
+\begin{enumerate}
+    \item パケットの格納\\
+        デバッグ支援OSが共有メモリの受信バッファにパケットを格納する．
+    \item 受信ディスクリプタの取得\\
+        デバッグ支援OSが共有メモリから受信ディスクリプタを取得する．
+    \item 受信状態の書き換え\\
+        デバッグ支援OSが受信ディスクリプタの受信状態を書き換える．
+    \item 受信ディスクリプタの再配置\\
+        デバッグ支援OSが受信ディスクリプタを共有メモリに再配置する．
+\end{enumerate}
+
+\section{課題}
+今後の課題について以下に示す．
+\begin{enumerate}
+    \item パケットジェネレータの作成\\
+        NICドライバの受信処理ではパケット内のデータ部分のみを
+        ソケットバッファに格納し，処理しているため，適当なデータを
+        用意できれば良いと考えている．
+\end{enumerate}
+\section{おわりに}
+本資料ではNICの処理における受信ディスクリプタ内の受信状態の
+書き換えについて述べた．
+今後は課題に取り組み実装をすすめる．
+
+\end{document}
+
+

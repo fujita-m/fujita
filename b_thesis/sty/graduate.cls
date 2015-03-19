@@ -262,8 +262,8 @@
   \newpage
   \listoffigures  % 図の目次
   \newpage
-  \listoftables   % 表の目次
-  \newpage
+  % \listoftables   % 表の目次
+  % \newpage
 
 %  \pagestyle{myheadings}
   \ifnoheadfoot

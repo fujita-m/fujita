@@ -1,0 +1,4 @@
+platex yoyaku.tex
+dvipdfmx yoyaku.dvi
+pdfcrop --margins '40 60 40 40' yoyaku.pdf
+acroread yoyaku-crop.pdf
