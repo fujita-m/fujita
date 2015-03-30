@@ -1,0 +1,98 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\LARGE システムコールの追加方法について}
+\end{center}
+
+\begin{flushright}
+  2015/3/30\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では，新B4課題の「(課題3)IPIを送信するシステムコールの実装と
+実装手順書の作成」におけるシステムコールの追加手順を示すため，
+Linux3.17におけるシステムコールの追加手順について
+記述する．
+\section{追加手順}\label{interrupt_handler}
+\subsection{システムコール本体を用意}
+システムコールの本体を arch/x86/kernel 以下に配置する．
+システムコール本体のソースコードの例を以下に示す．
+\subsection{システムコールテーブルへの追加}
+新たに作成するシステムコールの名前をarch/x86/syscalls/syscall\_64.tbl
+に追加する．
+arch/x86/syscalls/syscall\_64.tblを以下のように変更する．
+\begin{verbatim}
+ 310     64      process_vm_readv        sys_process_vm_readv
+ 311     64      process_vm_writev       sys_process_vm_writev
+ 312     common  kcmp                    sys_kcmp
+ 313     common  finit_module            sys_finit_module
++314     common  sys_my_syscall          sys_my_syscall
+\end{verbatim}
+\subsection{プロタイプ宣言を追加}
+新たに作成するシステムコールのプロトタイプ宣言を追加する．
+include/linux/syscalls.hを以下のように変更する．
+\begin{verbatim}
+ asmlinkage long sys_kcmp(pid_t pid1, pid_t pid2, int type,
+                          unsigned long idx1, unsigned long idx2);
+ asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
+ 
++asmlinkage long sys_my_syscall( char __user *buf, int count );
+\end{verbatim}
+\subsection{Makefileの編集}
+Makefileを編集し，新たに作成するシステムコールをmake対象にする．
+arch/x86/kernelを以下のように変更する．
+\begin{verbatim}
+ obj-$(CONFIG_PMC_ATOM)       += pmc_atom.o
++obj-y                        += my_syscall.o 
+\end{verbatim}
+\subsection{カーネルのビルド}
+資料$<$271-02$>$を参考にカーネルのビルドを行う．
+\section{動作確認}
+\subsection{追加したシステムコールを呼び出すプログラムの作成}
+新たに追加したシステムコールを呼び出すプログラムを任意のディレクトリに
+作成する．
+以下に，ソースコードの例を示す．
+\begin{verbatim}
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/syscall.h>
+
+int main(void)
+{
+    syscall(314);
+    return 0;
+}
+\end{verbatim}
+\subsection{プログラムの実行}
+作成したプログラムをコンパイルし，実行する．
+
+\section{おわりに}
+本資料では，Linux3.17におけるシステムコールの追加手順について述べた．
+\end{document}
+
+
