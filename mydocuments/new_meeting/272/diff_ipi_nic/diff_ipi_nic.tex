@@ -1,0 +1,80 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\LARGE IPIからの割り込みとNICからの割り込みの違いについて}
+\end{center}
+
+\begin{flushright}
+  2015/4/6\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では，IPIによる割り込みとNIC(デバイス)による割り込みの
+違いについて示す．
+両者の割り込み発生から割り込みハンドラの動作までの処理流れを
+示し，違いを示す．
+\section{両者の違いについて}
+IPIによる割り込みとNICによる割り込みの違いは以下の通りである．
+\begin{enumerate}
+    \item コアへ割り込み要因を表すベクタ番号を通知するまでの流れ\\
+        NIC(デバイス)はI/O APIC のピンに割り込みを通知する．
+        ピンに対応した番号mからベクタ番号nに変換し，
+        変換したベクタ番号nをコアに通知する．
+        これに比べ，IPIによる割り込みは，IPIに直接ベクタ番号を
+        指定できるため，I/O APICを介さずにコアへベクタ番号を通知する．
+\end{enumerate}
+ベクタ番号をコアへ通知してからの割り込みハンドラが動作するまでは
+両者ともに同様の処理を行う．
+\section{ベクタ番号を通知されてから割り込みハンドラが動作するまでの処理流れ}
+コアがベクタ番号を通知されてから割り込みハンドラが動作するまでの処理流れを
+以下に示す．
+\begin{enumerate}
+    \item
+        コアはベクタ番号nを受け取った後，Interrupt Descriptor Table(IDT) 
+        のn番目のエントリに登録された割り込みゲートを呼び出す．
+    \item 
+        割り込みゲートはベクタ番号を引数に，デバイスからの割り込みを処理する
+        関数 do\_IRQ()を呼び出す．
+    \item 
+        do\_IRQ()はコアに対応するベクタ管理表を用い，ベクタ番号nから
+        IRQ番号pを求める．
+    \item
+        OSは求めたIRQ番号pに対応する割り込み処理を行う．
+\end{enumerate}
+\section{IPIとNICからの割り込みの差によるパケット受信処理の影響}
+IPIとNICからの割り込みの差は，ベクタ番号をコアへ通知する
+までの流れのみである．
+したがって，本研究で扱うNICドライバのパケット受信割り込み処理
+には影響がないと考えられる．
+\section{おわりに}
+本資料ではIPIとNICからの割り込みの違いを述べた．
+また，その違いにより，NICドライバのパケット受信割り込み処理
+に影響がないことを示した．
+\end{document}
+
+

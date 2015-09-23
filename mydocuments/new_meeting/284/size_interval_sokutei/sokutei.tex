@@ -1,0 +1,167 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE デバッグ支援環境における受信処理可能な
+    パケットサイズと割り込み間隔の測定}
+\end{center}
+
+\begin{flushright}
+    2015/9/8\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では本デバッグ支援環境において，どの程度のパケットのサイズと，
+割り込みの間隔であれば，パケット受信処理を正常に行えるかを測定したことを記述する．
+また，測定にかかった時間と処理したパケットの総量から本デバッグ環境において，
+どの程度の通信量を実現できるかを計算し，これについて記述している．
+
+\section{測定}
+\subsection{測定目的}
+本実験における測定の目的は，本デバッグ環境において，
+どの程度NICの性能を擬似できるかについてを考察することである．
+実現できる通信量を求めることにより，本デバッグ環境がNICを擬似する
+性能を出せるかどうかについて調査する．
+
+\subsection{測定環境}
+本実験における測定環境について，表1に示す．
+また，デバッグ支援OSとデバッグ対象OSがそれぞれ1つずつコアを占有している．
+\begin{table}[htbp]
+    \caption{実験環境}
+    \label{kankyou}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            項目名      & 環境    \\ \hline
+            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+            NICドライバ & RTL8169    \\ 
+            ソースコード& r8169.c \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\subsection{測定方法}\label{method}
+Mintを用いてデバッグ支援OSとデバッグ対象OSを動作させる．
+デバッグ支援OSで
+以下の操作を3000回行い，パケット受信処理に失敗した回数を記録する．
+なお，パケット受信処理に成功するとは，NICドライバの割り込みハンドラが動作し，
+ソケットバッファに格納する処理を通ったこととしている．
+\begin{enumerate}
+    \item Mintの共有メモリに配置しているNICの受信バッファにパケットを格納する．
+    \item Mintの共有メモリに配置しているNICの受信ディスクリプタを受信状態に更新し，再配置する．
+    \item 指定した送信間隔になるまで処理を待たせ，指定した間隔になるとIPIを送信する．
+\end{enumerate}
+
+\subsection{IPIの送信間隔}\label{interval_ipi}
+どの程度の間隔ならば正常にパケット受信処理できるかを測定するため，
+IPIの送信間隔を増加させて，2.3の操作を何度も行った．
+具体的には，2.3の操作を1サイクルとし，IPIの送信間隔を100nsずつ増加させながら500サイクル行った．
+つまり，IPIの送信間隔が0nsから50000nsまでの送信間隔で測定を行った．
+
+\subsection{パケットのサイズ}
+パケットのサイズのによるパケット受信処理の影響を調査するため，
+以下の3つのパケットサイズで2.3と2.4の操作を行った．
+\begin{enumerate}
+    \item 1KB\\
+        デフォルトのMTU(1500B)に満たないサイズのパケットで測定を行った．
+    \item 4KB\\
+        デフォルトのMTU(1500B)を超える大きなサイズのパケットで測定を行った．
+    \item 8KB\\
+        Linuxカーネル3.0.8におけるNICドライバ(RTL8169)が表現できる最大のパケットサイズで測定を行った．
+\end{enumerate}
+
+\subsection{測定結果}
+\insertfigure[0.8]{fig:sokutei}{fig1}{測定結果}{ipi route}
+測定結果を図\ref{fig:sokutei}に示し，以下で説明する．
+\begin{enumerate}
+    \item IPIの送信間隔が0nsから3000nsの場合，パケット受信の失敗回数は2750回前後である．
+    \item IPIの送信間隔が3000ns以上の場合，パケットの受信失敗回数は1次関数的に減少する．
+    \item パケットのサイズを増加させるほど，傾きが緩やかになり，パケット受信失敗回数が0回になる間隔が
+        大きくなる．
+    \item 最も大きなサイズである8KBの場合，約5500nsの間隔であればすべてのパケット受信処理が正常に行われる．
+\end{enumerate}
+
+\section{考察}
+\subsection{動作を確認した通信量}
+測定時に，1サイクル毎の測定時間を記録した．
+この値と，パケットのサイズ，および割り込みの回数である3000回から通信量を計算した．
+それぞれの要素の値を以下に示す．
+\begin{enumerate}
+    \item 処理したパケットの個数:   3000個
+    \item 処理したパケットのサイズ: 8KB
+    \item 処理にかかった時間:       16583us
+\end{enumerate}
+これらの要素から動作を確認した最大の通信量を計算したところ，
+約10Gbpsを実現していた．
+したがって約10Gbpsを本デバッグ支援環境において実現できていることを確認できたといえる．
+PCI Expressの転送量の1レーンは2.5Gbpsであり，
+10Gbpsはこの4レーン相当である．
+\subsection{割り込み間隔の正確さ}
+指定した割り込み間隔がどの程度正確に実現できているかを調査した．
+以下の条件で測定を行った際，処理にかかった時間は16583usであった．
+\begin{enumerate}
+    \item 処理したパケットの個数:  3000個
+    \item 処理したパケットのサイズ:  8KB
+    \item IPIの送信間隔:  5400ns
+\end{enumerate}
+IPIの送信間隔と割り込みの回数である3000回からインターバルのみで16200nsかかると計算できる．
+実際かかった時間との差分は383usである．
+この差が大きいか否かを検討する．
+差が小さければ，指定した割り込み間隔が正確に実現できていると言える．
+\subsection{CPU性能による結果の変化}
+本実験は頻繁に割り込みをデバッグ対象OSのコアに発生させているため，
+CPUの性能や，デバッグ対象OSのコア数によって結果が変動すると考えられる．
+このため，コア数やCPUの性能を変えるとどの程度値が変動するかを測定する必要がある．
+
+\section{おわりに}
+本資料では本デバッグ支援環境において，どの程度のパケットのサイズと，
+割り込みの間隔であれば，パケット受信処理を正常に行えるかを測定したことを記述した．
+また，同時に1サイクル毎の時間を測定し，この時間とパケットのサイズから実現可能な
+通信量について計算した．
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}
+
+

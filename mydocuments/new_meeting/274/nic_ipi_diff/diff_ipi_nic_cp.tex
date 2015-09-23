@@ -1,0 +1,101 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\LARGE IPIからの割り込みとNICからの割り込みの違いについて(修正版)}
+\end{center}
+
+\begin{flushright}
+  2015/5/7\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では，IPIからの割り込みとNICからの割り込みの違いについての修正版を示す．
+IPIからの割り込みとNICからの割り込みの処理流れの図を作成し，追加することで，
+両者の差を明確にする．
+\section{修正前との差異}
+修正前との差異は，NICとIPIによる割り込み発生までの処理流れ中の，
+差がある部分についての図を作成し，その説明を追加したことである．
+\ref{ipi}節と\ref{nic}節に図と説明を追加している．
+\section{両者の違いについて}
+\subsection{IPIとNICの割り込み通知の差}
+IPIとNICの割り込み通知の差は，割り込み要因を示すベクタ番号
+をコアに通知するまでの流れにある．
+コアがベクタ番号を通知してからの処理は同様の処理を行う．
+\subsection{IPIによる割り込み通知}\label{ipi}
+IPIによる割り込み通知の中でベクタ番号をコアに通知するまでの流れを図\ref{fig:ipi}に示し，
+以下で説明する．
+        \begin{enumerate}
+            \item コア0からIPIの送信用レジスタICRへ宛先のLocal APIC IDと
+                割り込み要因を示すベクタ番号nを書き込む．
+            \item LAPICから送信先コアのLAPICへメッセージが送信される．
+            \item メッセージを受信したLAPICからコア1へベクタ番号nを通知する．
+        \end{enumerate}
+
+\insertfigure[0.9]{fig:ipi}{figs1}{割り込みがコアに通知されるまでの処理流れ(IPI)}{ipi route}
+        \subsection{NICによる割り込み通知}\label{nic}
+
+        NICによる割り込み通知の中でベクタ番号をコアに通知するまでの流れを図\ref{fig:nic}
+        に示し，以下で説明する．
+        \begin{enumerate}
+            \item I/O APICのピン番号mに割り込みが通知される．
+            \item I/O APICのリダイレクションテーブルにより，通知先のコアを求め，ピン番号m
+                をベクタ番号nに変換する．
+            \item コア1へベクタ番号nを通知する．
+        \end{enumerate}
+\section{ベクタ番号を通知されてから割り込みハンドラが動作するまでの処理流れ}
+コアがベクタ番号を通知されてから割り込みハンドラが動作するまでの処理流れを
+以下に示す．
+
+\begin{enumerate}
+    \item
+        コアはベクタ番号nを受け取った後，Interrupt Descriptor Table(IDT) 
+        のn番目のエントリに登録された割り込みゲートを呼び出す．
+    \item 
+        割り込みゲートはベクタ番号を引数に，デバイスからの割り込みを処理する
+        関数 do\_IRQ()を呼び出す．
+    \item 
+        do\_IRQ()はコアに対応するベクタ管理表を用い，ベクタ番号nから
+        IRQ番号pを求める．
+    \item
+        OSは求めたIRQ番号pに対応する割り込み処理を行う．
+\end{enumerate}
+
+\insertfigure[0.8]{fig:nic}{figs2}{割り込みがコアに通知されるまでの処理流れ(NIC)}{nic route}
+\section{IPIとNICからの割り込みの差によるパケット受信処理の影響}
+IPIとNICからの割り込みの差は，ベクタ番号をコアへ通知する
+までの流れのみである．
+したがって，本研究で扱うNICドライバのパケット受信割り込み処理
+には影響がないと考えられる．
+\section{おわりに}
+本資料ではIPIとNICからの割り込みの違いを述べた．
+また，その違いにより，NICドライバのパケット受信割り込み処理
+に影響がないことを示した．
+\end{document}
+
+

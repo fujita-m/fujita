@@ -1,0 +1,137 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE デバッグ支援環境における受信処理可能な通信量の測定方法}
+\end{center}
+
+\begin{flushright}
+    2015/8/25\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では本デバッグ支援環境において，パケットを連続で送信する際，
+パケットがどの程度の間隔とサイズならば正常にパケット受信処理をできるかの測定方法について
+記述する．
+
+\section{測定方法}
+\subsection{概要}
+パケットを3000個作成し，3000回の割り込み処理をさせる操作を1サイクルとする．
+これを2000サイクル繰り返し，各サイクルで失敗した回数を求める．
+サイクル数が増える毎に割り込みの発行間隔を増加させる．
+また，これらの処理をパケットのサイズを変化させて測定する．
+さらに，1サイクル毎の時間も測定することで通信量を求める．
+1サイクルの処理を図\ref{fig:cycle}に示し，以下で説明する．
+
+\begin{enumerate}
+    \item デバッグ対象OS上で，1サイクルで最後に受信したパケットのシーケンス番号
+        を表示するプログラムを動作させる．
+    \item デバッグ支援OS上で動作するパケットジェネレータにより，
+        3000個のパケットを作成する．この際，送信する順にパケットにシーケンス番号を
+        付与する．
+    \item システムコールとして実装しているデバッグ支援機構を呼び出す．
+    \item デバッグ支援機構の処理中で以下の処理を3000回繰り返す．
+        \begin{enumerate}
+            \item パケットを共有メモリに配置し，割り込みを発生させる．
+            \item デバッグ対象OSのNICドライバの割り込みハンドラが動作し，パケット受信割り込み処理を行う．
+            \item 割り込みハンドラの処理の最後でMintの共有メモリに配置しているカウンタをインクリメントする．
+        \end{enumerate}
+    \item 処理を終えると割り込みの回数の3000回とカウンタの値を比較することで処理の失敗回数を求める．
+\end{enumerate}
+
+\subsection{測定手順}
+測定はMintで2つのOSを用いて行う．
+一方はNICの擬似をし，割り込みを発生させるデバッグ支援OSである．
+他方は割り込みが発生するデバッグ対象OSである．
+また，同じ測定方法，手順でパケットのサイズを変化させて，測定を行う．
+測定の手順を以下に示す．
+
+\begin{enumerate}
+    \item Mintを用いてデバッグ支援OSとデバッグ対象OSを動作させる．
+    \item デバッグ対象OSでネットワークインタフェースを起動する．
+    \item デバッグ対象OS上でパケット受信用のプログラムを動作させる．
+    \item デバッグ支援OS上でパケットジェネレータを動作させる．
+    \item 3000個のパケットを作成し，デバッグ支援機構を呼び出す．
+    \item デバッグ支援機構で，3000回割り込みを発生させる．
+    \item デバッグ対象OSのNICドライバが割り込みを受けて割り込み処理を開始する．
+    \item 割り込み処理を終えると，カウンタの値をインクリメントする．
+    \item (7)と(8)の処理を3000回繰り返した後，デバッグ支援機構がカウンタの値を取得し，
+        割り込みの回数である3000回と比較して失敗した回数を求め，この値を返却する．
+    \item パケットジェネレータが割り込み間隔と失敗回数をCSV形式でファイルに出力する．
+\end{enumerate}
+
+
+\insertfigure[0.8]{fig:cycle}{fig1}{1サイクルの処理}{ipi route}
+
+\subsection{パケットのサイズ}
+サイズとパケットの送信にかかる時間からどの程度の通信量を
+実現できているかを求める．
+変化させるパケットのサイズとして，以下のサイズを考えている．
+\begin{enumerate}
+    \item 64B\\
+        ヘッダのサイズが42Bであるため，最小のパケットとして
+        64B．
+    \item 512B\\
+        1KB未満のパケットとして512B．
+    \item 1KB\\
+        1KB以上のパケットの最小サイズとして1KB．
+    \item 1500B\\
+        デフォルトで設定されているMTUである1500B．
+    \item 8KB\\
+        NICの受信バッファの最大サイズの半分の8KB．
+    \item 16KB\\
+        NICの受信バッファの最大サイズである16KB．
+\end{enumerate}
+
+\section{おわりに}
+本資料では本デバッグ支援環境において，連続でパケットを送信した際に，
+どの程度の間隔とサイズならば正常にパケット受信処理を行えるかの
+測定方法について述べた．
+今後は，この方法で測定を行う．
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}
+
+

@@ -1,0 +1,236 @@
+\documentclass[fleqn, 14pt]{extarticle}
+\usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{comment}
+\tolerance=1000
+\subtitle{(2015年5月15日$\sim$2015年6月11日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室M1\\藤田 将輝}
+\date{2015年6月12日}
+\title{記録書 No.27}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+\begin{document}
+\maketitle
+\section{前回ミーティングからの指導・指摘事項}
+\label{sec-1}
+\begin{enumerate}
+\item 特になし
+\newline
+\hfill
+
+\end{enumerate}
+
+\section{実績}
+\label{sec-2}
+
+\subsection{研究関連}
+\label{sec-2-1}
+\begin{enumerate}
+    \item 研究テーマに関する項目
+    \hfill
+    \label{enum-research1}
+    \begin{enumerate}
+
+        \item 参考文献の読解
+        \hfill
+        \label{enum-1-A}
+        (50％，+0％)
+        \item 使用する共有メモリ領域の検討
+        \hfill
+        \label{enum-1-B}
+        (75％，+0％)
+        \item NICのデバイスドライバの改変箇所の調査
+        \hfill
+        \label{enum-1-C}
+        (50％，+0％)
+        \item パケット受信処理の実装
+        \hfill
+        \label{enum-1-D}
+        (65％，+5％)
+
+    \end{enumerate}
+    \item 開発に関する項目
+    \hfill
+    \label{enum-research2}
+    \begin{enumerate}
+
+        \item 自動ビルドスクリプトの作成
+        \hfill
+        \label{enum-2-A}
+        (95％，+0％)
+    \end{enumerate}
+
+    \item 第20回New開発打ち合わせ
+    \hfill
+    \label{enum-research3}
+    (5/15)
+    \item 第276回New打ち合わせ 
+    \hfill
+    \label{enum-research3}
+    (5/26)
+    \item 第21回New開発打ち合わせ 
+    \hfill
+    \label{enum-research3}
+    (6/01)
+    \item 第277回New開発打ち合わせ
+    \hfill
+    \label{enum-research3}
+    (6/10)
+    \end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-2-2}
+\begin{enumerate}
+
+\item 全体ミーティング 
+\hfill
+\label{enum-lab1}
+(5/15)
+
+
+\item 平成27年度第1回研究室内部屋別対抗ボウリング大会
+\hfill
+\label{enum-lab2}
+(5/15)
+
+\item 乃村研ミーティング
+\hfill
+\label{enum-lab2}
+(6/1)
+
+\end{enumerate}
+
+\subsection{大学院関連}
+\label{sec2-3}
+\begin{enumerate}
+
+    \item 特になし
+    \hfill
+    \label{enum-univ2}
+
+\end{enumerate}
+
+\section{詳細および反省・感想}
+\label{sec-3}
+%\setcounter{subsection}{1}
+\subsection{研究関連}
+\label{sec-3-2}
+\begin{itemize}
+\item[(\ref{enum-1-D})]
+    NICの動作の再現する機構を実現している．この機構の中のパケットを
+    作成する機能を作成している．Etherフレームが作成される
+    処理流れを調査し，調査した処理流れを参考にパケットを作成する．
+    作成したパケットをMintの共有メモリに配置し，一方のOSから
+    他方のOSへ任意のタイミングで割り込みを発生させることにより，
+    作成したパケットを処理させる．
+
+\end{itemize}
+
+\section{今後の予定}
+\label{sec-4}
+\subsection{研究関連}
+\label{sec-4-1}
+
+\begin{enumerate}
+
+\item 研究テーマに関する項目
+\hfill
+\begin{enumerate}
+
+
+\item 参考文献の読解
+\hfill
+(6月下旬)
+
+\item 使用する共有メモリ領域の検討
+\hfill
+(6月下旬)
+
+\item NICのデバイスドライバの改変箇所の調査
+\hfill
+(7月中旬)
+
+\item パケット受信処理の実装
+\hfill
+(6月下旬)
+\end{enumerate}
+\item 開発に関する項目
+\hfill
+\begin{enumerate}
+
+\item 自動ビルドスクリプトの作成
+\hfill
+(7月中旬)
+
+\end{enumerate}
+
+\item 第22回New開発打ち合わせ
+\hfill
+\label{enum-7}
+(6/15)
+
+\item 第278回New開発打ち合わせ
+\hfill
+\label{enum-7}
+(6/22)
+\end{enumerate}
+\subsection{研究室関連}
+\label{sec-4-2}
+
+\begin{enumerate}
+
+\item 全体ミーティング
+\hfill
+\label{enum-18}
+(6/12)
+
+\item 乃村研ミーティング 
+\hfill
+\label{enum-18}
+(6/22)
+
+\item M2論文紹介
+\hfill
+\label{enum-18}
+(6/26)
+
+\end{enumerate}
+
+\subsection{大学院関連}
+\begin{enumerate}
+
+\item 特になし
+\hfill
+\label{enum-17}
+
+
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+\end{document}

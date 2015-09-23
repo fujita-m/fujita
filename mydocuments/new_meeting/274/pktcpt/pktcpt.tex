@@ -1,0 +1,59 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\LARGE パケットのキャプチャ}
+\end{center}
+
+\begin{flushright}
+  2015/5/7\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では，正常に処理されるパケットを複製し，IPIによってこれを処理させる流れについて示す．
+\section{概要}
+本資料における処理の流れを図\ref{fig:gaiyou}に示し，以下で説明する．
+\begin{enumerate}
+    \item 一方の計算機から他方の計算機にUDPを送信する．
+    \item 受信側の計算機でパケットをキャプチャする．
+    \item Mintを用いて2つのOSを起動する．
+    \item キャプチャしたパケットを共有メモリに配置する．
+    \item コア0からコア1へIPIを送信する．
+    \item コア1がIPIを受信すると割り込みハンドラが動作し，
+        パケットの受信割り込み処理を行う．
+\end{enumerate}
+\section{パケットのキャプチャ}
+一方の計算機から他方の計算機にUDPを送信し，メモリ上に配置されたパケットをキャプチャする．
+
+\section{おわりに}
+本資料ではIPIとNICからの割り込みの違いを述べた．
+また，その違いにより，NICドライバのパケット受信割り込み処理
+に影響がないことを示した．
+\end{document}
+
+

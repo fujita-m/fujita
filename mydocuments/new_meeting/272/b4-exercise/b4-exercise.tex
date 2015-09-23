@@ -1,0 +1,96 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\LARGE 2015年度新B4課題について}
+\end{center}
+
+\begin{flushright}
+  2015/4/6\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では，2015年度新B4課題について述べる．
+\section{新B4課題一覧}
+新B4の課題を以下に示す．
+\begin{enumerate}
+    \item Debianのインストール
+    \item Linuxカーネルの再構築
+    \item IPIを送信するシステムコールの実装と実装の手順書作成
+    \item Mintの構築
+\end{enumerate}
+\section{期限}
+各課題について各自で期限を設定し，Newグループ宛てにメールを送信する．
+\section{実験環境}
+実験用計算機を各自に1台割り当て，これを用いて課題に取り組む．
+\section{各課題の詳細}
+\subsection{(課題1)Debianのインストール}
+Debian(64bit)のインストールディスクを用いて，各自の実験用計算機に
+Debianをインストールする．
+\subsection{(課題2)Linuxカーネルの再構築}
+Gitを用いて，LinuxカーネルのソースコードをLinuxのGitリポジトリから取得し，
+Linuxカーネルを再構築する．再構築するLinuxカーネルのバージョンは3.15とする．
+Mintが追従しているLinuxの最新バージョンが3.17であるが，
+Mint3.17はバージョンアップされて日が浅く，不安定であるため，安定しているMint3.15を構築する．
+このため，再構築するLinuxも3.15とする．
+LinuxのGitリポジトリは以下のものを使用する．
+\begin{verbatim}
+git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+\end{verbatim}
+また，再構築前のカーネルのサイズと再構築後のカーネルのサイズを比較し，
+同程度のサイズであることを確認し，課題の完了とする．
+\subsection{(課題3)IPIを送信するシステムコールの実装と実装の手順書作成}
+指定したコアIDを持つコアにInter Processor Interrupt(IPI)を送信する
+システムコールを実装する．IPIとはプロセッサ間割り込みのことである．
+IPIではベクタ番号を指定して送信することにより，ベクタ番号に対応した
+割り込みハンドラが動作する．
+割り込みハンドラとは割り込みが通知された際に実行される処理のことである．
+新B4が実装するのはIPIを送信するシステムコールである．
+割り込みハンドラの登録に関しては，予め割り込みハンドラ登録用の
+ソースコードを用意し，それを用いて割り込みハンドラを登録する．
+また，発展課題として作成したシステムコールをglibcへ登録することがある．
+これを発展課題に設定した理由として，glibcへ登録する操作は複雑であり，
+B4の必須課題としては時間がかかりすぎると考えるためである．
+システムコールの追加手順や，割り込みハンドラの登録手順は，M1以上が
+B4に教え，B4は教えられた内容や手順を資料化することで課題を完了とする．
+\subsection{(課題4)Mintの構築}
+実験用計算機にMintを構築し，動作を確認する．
+構築するMintのバージョンは3.15とする．
+Mintの構築，動作に必要なものは，MintのソースコードとKexecである．
+これらはGitリポジトリから取得する．Mintの構築手順は，
+GitHubに置かれているMintリポジトリのwikiを参照する．
+以下に，GitリポジトリとwikiのURLを示す．
+\begin{verbatim}
+Mint Gitリポジトリ git@github.com:nomlab/Mint.git
+Kexec Gitリポジトリ git@github.com:nomlab/Kexec-mint.git
+wiki https://github.com/nomlab/Mint.wiki.git
+\end{verbatim}
+\section{おわりに}
+本資料では，新B4課題の詳細について述べた．
+\end{document}
+
+

@@ -1,0 +1,140 @@
+\documentclass[fleqn, 12pt]{extarticlej}
+\usepackage{sty/reportForm}
+\usepackage{hyperref}
+\tolerance=1000
+\subtitle{(2015年04月3日$\sim$2015年04月19日)}
+\usepackage{sty/strike}
+\usepackage{nutils}
+\setcounter{section}{0}
+\author{乃村研究室M1\\藤田 将輝}
+\date{2015年04月20日}
+\title{記録書 No.23}
+\begin{document}
+
+\maketitle
+\section{実績，詳細，および反省・感想}
+\subsection{研究関連}
+\label{sec-2-1}
+\begin{enumerate}
+    \item 研究テーマに関する項目
+    \hfill
+    \label{enum-research1}
+    \begin{enumerate}
+        \item 参考文献の読解
+        \hfill
+        \label{enum-1-A}
+        (50％，+0％)
+        \item 使用する共有メモリ領域の検討
+        \hfill
+        \label{enum-1-B}
+        (75％，+0％)
+        \item NICのデバイスドライバの改変箇所の調査
+        \hfill
+        \label{enum-1-C}
+        (50％，+0％)
+        \item パケットの作成
+        \hfill
+        \label{enum-1-D}
+        (40％，+20％)\\
+        NICのパケット受信処理を擬似するため，処理をさせる
+        パケットを作成している．
+        現在は，パケットの構成を調査し，UDPパケットを構成
+        している．
+        Etherヘッダに宛先のMACアドレスを直接指定し，
+        NICドライバで処理させているが，NICドライバで
+        指定したMACアドレスを確認できていない．
+        バイトオーダが関係しているのではないかと考えている．
+        今後はまず，正常なパケットをキャプチャし，このパケットを
+        任意のタイミングで処理させることを目標とする．
+
+    \end{enumerate}
+    \item 開発に関する項目
+    \hfill
+    \label{enum-research2}
+    \begin{enumerate}
+
+        \item 自動ビルドスクリプトの作成
+        \hfill
+        \label{enum-2-A}
+        (95％，+0％)
+    \end{enumerate}
+    \item 第272回New打ち合わせ 
+    \hfill
+    \label{enum-research3}
+    (4/6)
+    \item 第18回New開発打ち合わせ 
+    \hfill
+    \label{enum-research3}
+    (4/13)
+
+\end{enumerate}
+  \subsection{研究室関連}
+  \begin{enumerate}
+   \item 全体ミーティング
+         \hfill
+         (04/16)
+  \end{enumerate}
+
+  \subsection{大学院関連}
+  \begin{enumerate}
+    \item 平成27年度岡山大学入学式，大学院入学式
+    \hfill
+    \label{enum-univ2}
+    (4/8)
+
+    \item プロセッサ工学特論
+    \hfill
+    \label{enum-univ2}
+    (4/9,16)
+    \item システムプログラム特論
+    \hfill
+    \label{enum-univ2}
+    (4/14)
+    \item ソフトウェア開発法
+    \hfill
+    \label{enum-univ2}
+    (4/14)
+    \item プログラミング方法論
+    \hfill
+    \label{enum-univ2}
+    (4/15)
+    \item ヒューマンコンピュータインタラクション
+    \hfill
+    \label{enum-univ2}
+    (4/17)
+
+
+  \end{enumerate}
+
+\section{KPT}
+  \subsection{GOOD}
+  \begin{enumerate}
+   \item 運動ができた
+   \item 掃除できた
+   \item 23歳になった
+  \end{enumerate}
+
+  \subsection{BAD}
+  \begin{enumerate}
+   \item ダラダラと作業してしまう
+   \item 浪費癖が治らない
+  \end{enumerate}
+
+\section{近況報告}
+本日(4月20日)は自身の誕生日である．
+今年で23歳となった．
+23歳の抱負は，何事も中途半端にしないこととする．
+これまでは中途半端に終えてしまったことが多かったため，
+これからは最後までしっかりと考え，やり遂げる．
+\section{学会情報}
+\begin{enumerate}
+    \item 2015年並列／分散／協調処理に関する『別府』サマー・ワークショップ (SWoPP2015)
+        \begin{description}
+            \item[開催期間:]平成27年8月4日(火)〜8月6日(木)
+            \item[開催場所:] ビーコンプラザ 別府国際コンベンションセンター (大分県別府) 
+            \item[原稿締め切り:]未定(6月末)
+        \end{description}
+
+\end{enumerate}
+
+\end{document}

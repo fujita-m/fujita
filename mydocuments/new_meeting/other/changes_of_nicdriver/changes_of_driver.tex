@@ -1,0 +1,82 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE NICドライバの追加・変更点}
+\end{center}
+
+\begin{flushright}
+  2015/8/18\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では，NICドライバの追加・変更点をまとめ，記述する．
+\section{追加した関数}
+本デバッグ支援環境において，NICドライバに追加した関数を以下に示す．
+\begin{enumerate}
+    \item fujita\_ipi\_irq()\\
+        割り込みハンドラ(rtl8169\_interrupt\_fujita())を割り込みハンドラとして
+        登録し，ベクタ番号100番にIRQ番号を登録する．
+    \item rtl8169\_interrupt\_fujita()\\
+        本デバッグ支援環境における割り込みハンドラである．
+        NAPIによって登録されたポーリング関数(rtl8169\_poll())を呼び出す．
+        これにより，パケット受信割り込み処理を行う．
+\end{enumerate}
+\section{変更した関数}
+本デバッグ支援環境において，既存の関数に変更を加えた．
+変更した関数名と，内容を以下に示す．
+\begin{enumerate}
+    \item rtl8169\_open()\\
+        ネットワークインターフェースを起動させた際に実行され，受信バッファや受信ディスクリプタの初期化を行う関数である．
+        変更点は以下の3点である．
+        \begin{enumerate}
+            \item 受信ディスクリプタの配列の先頭アドレスを共有メモリに変更．
+            \item fujita\_ipi\_irq()を呼び出し，rtl8169\_interrupt\_fujita()を登録．
+            \item この関数の最後に，外部と通信を行わないようにするため，rtl8169\_asic\_down()を呼び出し，通信を停止する．
+        \end{enumerate}
+    \item rtl8169\_alloc\_rx\_data()\\
+        受信バッファのアドレスを決定する関数である．
+        変更点は以下の1点である．
+        \begin{enumerate}
+            \item 受信バッファのアドレスであるmappingの値を，Mintの共有メモリのアドレスに変更．
+        \end{enumerate}
+    \item rtl8169\_rx\_interrupt()\\
+        ポーリング関数(rtl8169\_poll())に呼ばれ，パケット受信割り込み処理を行う関数である．
+        変更点は以下の1点である．
+        \begin{enumerate}
+            \item パケットのサイズを算出する際の値を変更した．
+                変更前は，受信バッファの半分の8KBまでしかサイズとして算出できなかったため，
+                受信バッファのサイズである16KBまでを算出できるよう変更した．
+        \end{enumerate}
+\end{enumerate}
+\section{おわりに}
+本資料では，本デバッグ支援環境におけるNICドライバの追加・変更点について記述した．
+\end{document}
+
+

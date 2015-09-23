@@ -1,0 +1,120 @@
+\documentclass[fleqn, 14pt]{extarticlej}
+\usepackage{sty/reportForm}
+\usepackage{hyperref}
+\tolerance=1000
+\subtitle{(2015年06月01日$\sim$2015年06月24日)}
+\usepackage{sty/strike}
+\usepackage{nutils}
+\setcounter{section}{0}
+\author{乃村研究室M1\\藤田 将輝}
+\date{2015年06月25日}
+\title{記録書 No.28}
+\begin{document}
+
+\maketitle
+\section{実績，詳細，および反省・感想}
+\subsection{研究関連}
+\label{sec-2-1}
+\begin{enumerate}
+    \item 研究テーマに関する項目
+    \hfill
+    \label{enum-research1}
+    \begin{enumerate}
+        \item 参考文献の読解
+        \hfill
+        \label{enum-1-A}
+        (50％，+0％)
+        \item 使用する共有メモリ領域の検討
+        \hfill
+        \label{enum-1-B}
+        (75％，+0％)
+        \item NICのデバイスドライバの改変箇所の調査
+        \hfill
+        \label{enum-1-C}
+        (50％，+0％)
+        \item パケットの作成
+        \hfill
+        \label{enum-1-D}
+        (90％，+20％)\\
+        パケットのジェネレータを作成している．現在は，任意のメッセージの
+        UDPパケットを作成できている．作成したパケットを用いることで，
+        OSノード0からOSノード1へNICを用いずにメッセージを送信できることを
+        確認した．パケットの作成時に，各種のヘッダの情報はキャプチャした
+        パケットの情報をそのまま用いている．このため，サイズやチェックサム
+        等の情報をメッセージによって変動させることができない．したがって，
+        今後は，IPパケットの作成用のライブラリを調査することで，
+        パケットの作成のプロセスを理解し，ジェネレータの実装をすすめる．
+  
+    \end{enumerate}
+    \item 開発に関する項目
+    \hfill
+    \label{enum-research2}
+    \begin{enumerate}
+
+        \item 自動ビルドスクリプトの作成
+        \hfill
+        \label{enum-2-A}
+        (95％，+0％)
+    \end{enumerate}
+    \item 第21回New開発打ち合わせ
+    \hfill
+    \label{enum-research3}
+    (6/01)
+    \item 第277回New打ち合わせ
+    \hfill
+    \label{enum-research3}
+    (6/10)
+    \item 第22回New開発打ち合わせ
+    \hfill
+    \label{enum-research3}
+    (6/15)
+    \item 第278回New打ち合わせ
+    \hfill
+    \label{enum-research3}
+    (6/19)
+
+\end{enumerate}
+  \subsection{研究室関連}
+  \begin{enumerate}
+   \item 乃村研ミーティング
+         \hfill
+         (06/01)
+   \item 全体ミーティング
+         \hfill
+         (06/12)
+   \item Newもくもく会
+         \hfill
+         (06/22)
+  \end{enumerate}
+
+  \subsection{大学院関連}
+  \begin{enumerate}
+      \item 特になし
+  \end{enumerate}
+
+\section{KPT}
+  \subsection{GOOD}
+  \begin{enumerate}
+   \item もくもく会で目標を達成できた．
+   \item 焼肉が美味しかった．
+   \item 米を炊いて持ってくることで節約できている．
+  \end{enumerate}
+
+  \subsection{BAD}
+  \begin{enumerate}
+   \item 蒸し暑いせいか，気分が晴れない．
+   \item 下宿先ですでにクーラーをガンガン使っている．
+   \item 寝坊が多い．
+  \end{enumerate}
+
+\section{近況報告}
+自身は，週に1度程度バスケットボールをしている．
+最近暑くなってきたせいか，すぐにバテてしまい，足が止まってしまう．
+自身はパス，シュート，およびドリブルが上手くはないため，
+人より走ることでなんとかチームに貢献できていた．
+しかし，今は人並みかそれ以下の運動量である．
+対策として，体重を減らすことが効果的ではないかと考えている．
+この他にも普段の生活で体力の維持ができるトレーニング法を知っている方がいれば
+教えてください．
+
+\end{document}

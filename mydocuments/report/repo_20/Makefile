@@ -64,7 +64,7 @@ addpage = $(basename $(1))$(2)$(if $(3),.$(3),$(suffix $(1)))
 
 # if the main TeX file is ``myproject.tex'', set:
 #   PROJECT = myproject
-PROJECT		= repo_20
+PROJECT		= record_kpt
 
 # All figure files are extracted from the single PDF file: FIG_MASTER_FILE.
 # FIG_PAGES indicates which pages are extracted and used in the main TeX file.

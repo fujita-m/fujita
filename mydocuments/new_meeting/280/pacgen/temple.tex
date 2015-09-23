@@ -1,0 +1,194 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE パケットを作成するライブラリlibnetについて}
+\end{center}
+
+\begin{flushright}
+  2015/7/3\\
+  藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+現在，デバッグ支援環境の機能であるパケットジェネレータの実装のため，
+パケットを作成するライブラリを調査している．
+本資料では，任意のプロトコルを作成できるライブラリであるlibnetについて説明する．
+libnetではlibnetコンテキストという独自のデータを用いて，パケットを作成する．
+libnetコンテキストにそれぞれのレイヤにおけるプロトコルのヘッダを作成することでパケットを
+作成する．
+また，libnetを用いてパケットを作成できることを確認した．
+しかし，作成したパケットがデバイスドライバにおいて正常に処理されるかについては確認していない．
+以降の章では，libnetを用いた場合のパケットの作成方法について述べる．
+\section{libnet}
+libnetは任意のプロトコル，レイヤのパケットを作成するライブラリである．
+libnetを用いて，パケットを作成する際は，まずlibnetコンテキストという，
+ライブラリ固有のデータを初期化する必要がある．
+このデータに，ヘッダ等の情報を付与していく形でパケットが作成される．
+例として，libnetを使用した際の，UDPを作成する手順を図\ref{fig:libnet}に示し，以下で説明する．
+\begin{enumerate}
+    \item {\tt libnet\_init()}を実行し，libnetコンテキストを初期化する．
+    \item {\tt libnet\_build\_udp()}を実行し，UDPヘッダとpayloadを作成する．
+    \item {\tt libnet\_build\_ipv4()}を実行し，IPv4ヘッダを作成する．
+    \item {\tt libnet\_build\_ethernet()}を実行し，Etherヘッダを作成する．
+    \item {\tt libnet\_destroy()}を実行し，libnetコンテキストを開放する．
+\end{enumerate}
+\insertfigure[0.45]{fig:libnet}{fig1}{パケット作成流れ}{ipi route}
+\section{パケットの作成に必要なデータの作成}
+パケットを作成する際に必要なデータとして，
+以下のデータが挙げられる．
+\begin{enumerate}
+    \item Etherヘッダ
+        \begin{enumerate}
+            \item 宛先MACアドレス
+            \item 送信元MACアドレス
+        \end{enumerate}
+    \item IPv4ヘッダ
+        \begin{enumerate}
+            \item 宛先IPアドレス
+            \item 送信元IPアドレス
+        \end{enumerate}
+    \item UDPヘッダ
+        \begin{enumerate}
+            \item 宛先ポート
+            \item 送信元ポート
+        \end{enumerate}
+\end{enumerate}
+libnetで定義されている関数を用いることで，送信元のMACアドレス，IPアドレスを
+容易に作成できる．
+また，ユーザが宛先アドレスを指定する際に，バイトオーダ等の情報を変換できる関数も定義されている．
+さらに，各ヘッダを定義する関数を用いることで，全てのヘッダの情報を自動的に作成できる．
+\section{ヘッダを作成する関数}
+libnetで定義されている関数の中で，UDPパケットを作成する際に使用される
+関数について以下に示し説明する．
+\begin{enumerate}
+    \item {\tt libnet\_build\_udp()}
+        \begin{description}
+            \item[【形式】]~\newline
+                {\tt libnet\_ptag\_t libnet\_build\_udp(uint16\_t sp, uint16\_t dp, uint16\_t len, uint16\_t sum,t uint8\_t *payload, uint32\_t payload\_s, libnet\_t *l, libnet\_ptag\_t ptag)}
+            \item[【引数】]~\newline
+                {\tt uint16\_t s}p: 送信元ポート番号\\
+                {\tt uint16\_t dp}: 宛先ポート\\
+                {\tt uint16\_t len}: UDPパケット全体のサイズ\\
+                {\tt uint16\_t sum}: チェックサム(0を指定すると自動で決定する．)\\
+                {\tt uint8\_t *payload}: payload\\
+                {\tt uint32\_t payload\_s}: payloadのサイズ
+                {\tt libnet\_t *l}: libnetコンテキスト\\
+                {\tt libnet\_ptag\_t ptag}: libnetコンテキストに付与されるタグ\\
+            \item[【戻り値】]~\newline
+                成功: {\tt ptag}\\
+                失敗: -1\\
+            \item[【機能】]~\newline
+                引数をもとに，UDPヘッダを作成し，libnetコンテキストに付与する．
+        \end{description}
+    \item {\tt libnet\_build\_ipv4()}
+        \begin{description}
+            \item[【形式】]~\newline
+                {\tt libnet\_ptag\_t libnet\_build\_ipv4(u\_int16\_t ip\_len, u\_int8\_t tos, u\_int16\_t id, u\_int16\_t frag, u\_int8\_t ttl, u\_int8\_t prot, u\_int16\_t sum, u\_int32\_t src, u\_int32\_t dst, u\_int8\_t * payload, u\_int32\_t payload\_s, libnet\_t* l, libnet\_ptag\_t ptag)}
+            \item[【引数】]~\newline
+                {\tt u\_int16\_t ip\_len}: IPパケット全体のサイズ\\
+                {\tt u\_int8\_t tos}: サービスビットのタイプ\\
+                {\tt u\_int16\_t id}: IPを識別する番号\\
+                {\tt u\_int16\_t frag}: フラグメンテーションビットとそのオフセット\\
+                {\tt u\_int8\_t ttl}: IPパケットの寿命\\
+                {\tt u\_int8\_t prot}: 次に続くプロトコルの識別\\
+                {\tt u\_int16\_t sum}: チェックサム\\
+                {\tt u\_int32\_t src}: 送信元IPアドレス\\
+                {\tt u\_int32\_t dst}: 宛先IPアドレス\\
+                {\tt u\_int8\_t * payload}: payload\\
+                {\tt u\_int32\_t payload\_s}: payloadのサイズ\\
+                {\tt libnet\_t* l}: libnetコンテキスト\\
+                {\tt libnet\_ptag\_t ptag}: libnetコンテキストに付与されるタグ\\
+
+            \item[【戻り値】]~\newline
+                成功: {\tt ptag}\\
+                失敗: -1\\
+            \item[【機能】]~\newline
+                引数をもとに，IPv4ヘッダを作成し，libnetコンテキストに付与する．
+        \end{description}
+    \item {\tt libnet\_build\_ethernet()}
+        \begin{description}
+            \item[【形式】]~\newline
+                {\tt libnet\_ptag\_t libnet\_build\_ethernet(u\_int8\_t* dst, u\_int8\_t * src, u\_int16\_t type, u\_int8\_t * payload, u\_int32\_t payload\_s, libnet\_t * l, libnet\_ptag\_t ptag)}
+            \item[【引数】]~\newline
+                {\tt u\_int8\_t* dst}: 宛先MACアドレス\\
+                {\tt u\_int8\_t * src}: 送信元MACアドレス\\
+                {\tt u\_int16\_t type}: 次に続くプロトコルの識別\\
+                {\tt u\_int8\_t * payload}: payload\\
+                {\tt u\_int32\_t payload\_s}: payloadのサイズ\\
+                {\tt libnet\_t* l}: libnetコンテキスト\\
+                {\tt libnet\_ptag\_t ptag}: libnetコンテキストに付与されるタグ\\
+
+            \item[【戻り値】]~\newline
+                成功: {\tt ptag}\\
+                失敗: -1\\
+            \item[【機能】]~\newline
+                引数をもとに，Etherヘッダを作成し，libnetコンテキストに付与する．
+        \end{description}
+\end{enumerate}
+\section{パケットの抽出方法}
+作成されたパケットはlibnetコンテキストに格納されており，これをパケットとして取り出す必要がある．
+{\tt libnet\_adv\_cull\_packet()}を使用することで，パケットを取り出せる．
+引数に，{\tt u\_int8\_t}の配列と{\tt u\_int32\_t}の変数を与えることで，作成したパケットとこのサイズを取得できる．
+詳細について以下に示し，説明する．
+\begin{description}
+    \item[【形式】]~\newline
+        {\tt int libnet\_adv\_cull\_packet(libnet\_t* l, u\_int8\_t** packet, u\_int32\_t* packet\_s)}
+    \item[【引数】]~\newline
+        {\tt libnet\_t* l}: libnetコンテキスト\\
+        {\tt u\_int8\_t** packet}: パケットが格納される配列\\
+        {\tt u\_int32\_t* packet\_s}: パケットのサイズが格納される変数\\
+    \item[【戻り値】]~\newline
+        成功: 1\\
+        失敗: -1\\
+    \item[【機能】]~\newline
+        作成したヘッダ等の情報をパケットに格納する．また，このサイズを格納する．
+\end{description}
+
+\section{課題}
+linnetを用いることで，指定したポート，IPアドレス，およびMACアドレスでパケットを作成できることを
+確認した．
+次の課題として以下の課題が考えられる．
+\begin{enumerate}
+    \item libnetを用いて作成したパケットが正常に処理されるかの調査\\
+        libnetを用いることでパケットを作成できることを確認したが，
+        このパケットが正常に処理されるかどうかを確認できていない．
+        このため，これを調査する．
+    \item 各種のヘッダを作成する関数の処理流れの調査\\
+        {\tt libnet\_build\_udp()}などのヘッダを作成する関数の内部処理について調査する．
+        また，これを参考にして，パケットジェネレータの実装をすすめる．
+\end{enumerate}
+\section{おわりに}
+本資料ではlibnetを用いたパケットの作成方法について述べた．
+また，libnetを用いることで，パケットを作成できることを確認した．
+今後の課題として，作成したパケットが本デバッグ支援機構において正常に処理されるか
+どうかを確認することと，{\tt libnet\_build\_udp()}などのヘッダを作成する関数内の処理を
+調査し，これを参考にパケットジェネレータを作成することが挙げられる．
+\end{document}
+
+

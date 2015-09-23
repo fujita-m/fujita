@@ -1,0 +1,240 @@
+\documentclass[fleqn, 14pt]{extarticle}
+\usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{comment}
+\tolerance=1000
+\subtitle{(2015年4月16日$\sim$2015年5月14日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室M1\\藤田 将輝}
+\date{2015年5月15日}
+\title{記録書 No.25}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+\begin{document}
+\maketitle
+\section{前回ミーティングからの指導・指摘事項}
+\label{sec-1}
+\begin{enumerate}
+\item 特になし
+\newline
+\hfill
+
+\end{enumerate}
+
+\section{実績}
+\label{sec-2}
+
+\subsection{研究関連}
+\label{sec-2-1}
+\begin{enumerate}
+    \item 研究テーマに関する項目
+    \hfill
+    \label{enum-research1}
+    \begin{enumerate}
+
+        \item 参考文献の読解
+        \hfill
+        \label{enum-1-A}
+        (50％，+0％)
+        \item 使用する共有メモリ領域の検討
+        \hfill
+        \label{enum-1-B}
+        (75％，+0％)
+        \item NICのデバイスドライバの改変箇所の調査
+        \hfill
+        \label{enum-1-C}
+        (50％，+0％)
+        \item パケット受信処理の実装
+        \hfill
+        \label{enum-1-D}
+        (60％，+40％)
+
+    \end{enumerate}
+    \item 開発に関する項目
+    \hfill
+    \label{enum-research2}
+    \begin{enumerate}
+
+        \item 自動ビルドスクリプトの作成
+        \hfill
+        \label{enum-2-A}
+        (95％，+0％)
+        \item debianでのMintの構築
+        \hfill
+        \label{enum-2-A}
+        (100％，+5％)
+    \end{enumerate}
+
+    \item 第273回New打ち合わせ 
+    \hfill
+    \label{enum-research3}
+    (4/20)
+    \item 第274回New打ち合わせ 
+    \hfill
+    \label{enum-research3}
+    (5/7)
+    \item 第275回New打ち合わせ 
+    \hfill
+    \label{enum-research3}
+    (5/14)
+    \item 第19回New開発打ち合わせ
+    \hfill
+    \label{enum-research3}
+    (4/27)
+    \end{enumerate}
+
+\subsection{研究室関連}
+\label{sec-2-2}
+\begin{enumerate}
+
+\item 全体ミーティング 
+\hfill
+\label{enum-lab1}
+(4/16)
+
+\item 乃村研ミーティング
+\hfill
+\label{enum-lab2}
+(4/20，5/11)
+
+\item 第27回乃村杯
+\hfill
+\label{enum-lab3}
+(5/11)
+
+\end{enumerate}
+
+\subsection{大学院関連}
+\label{sec2-3}
+\begin{enumerate}
+
+    \item 特になし
+    \hfill
+    \label{enum-univ2}
+
+\end{enumerate}
+
+\section{詳細および反省・感想}
+\label{sec-3}
+%\setcounter{subsection}{1}
+\subsection{研究関連}
+\label{sec-3-1}
+\begin{itemize}
+\item[(\ref{enum-1-D})]
+    Mintを用いて，パケット受信割り込み処理の再現を行なっている．
+    まず，正常に処理されるパケットをキャプチャし，解析した．次に，これと
+    同じ内容のパケットを作成し処理させることでパケット受信処理を再現した．
+    ただし，複製したパケットは
+    サイズが小さく，分割されていない．今後は，分割されたパケットの
+    受信処理の再現を可能にするため，どのようなプロセスでパケットが生成，分割，
+    および再度結合されるかを調査する．また，パケットの構造を調査し，
+    ヘッダ等の情報の中でパケットの分割に関わる情報を特定する．
+\end{itemize}
+
+\subsection{研究室関連}
+\label{sec-3-2}
+\begin{itemize}
+\item[(\ref{enum-lab3})]
+    第27回乃村杯に参加した．今回の乃村杯の種目は麻雀であった．
+    まず4つのチームにわかれ，チーム対抗戦を行った．
+    次に，チーム内で対戦することにより，個人の順位を決定した．
+    自身が参加したチームはメンバの奮闘により1位を獲得することができた．
+    さらにチーム内の対戦でも，運に恵まれたのか1位を獲得することができ，
+    今回の乃村杯を優勝できた．
+    初の乃村杯での優勝であったため，非常に嬉しかった．
+    また，乃村研究室のメンバで卓を囲むことでさらに親交を深めることができたように感じた．
+
+\end{itemize}
+
+\section{今後の予定}
+\label{sec-4}
+\subsection{研究関連}
+\label{sec-4-1}
+
+\begin{enumerate}
+
+\item 研究テーマに関する項目
+\hfill
+\begin{enumerate}
+
+
+\item 参考文献の読解
+\hfill
+(5月下旬)
+
+\item 使用する共有メモリ領域の検討
+\hfill
+(5月下旬)
+
+\item NICのデバイスドライバの改変箇所の調査
+\hfill
+(6月中旬)
+
+\item パケット受信処理の実装
+\hfill
+(5月下旬)
+\end{enumerate}
+\item 開発に関する項目
+\hfill
+\begin{enumerate}
+
+\item 自動ビルドスクリプトの作成
+\hfill
+(6月中旬)
+
+\end{enumerate}
+
+\item 第276回New打ち合わせ
+\hfill
+\label{enum-7}
+(5/26)
+
+\end{enumerate}
+\subsection{研究室関連}
+\label{sec-4-2}
+
+\begin{enumerate}
+
+\item 乃村研ミーティング 
+\hfill
+\label{enum-18}
+(6/01)
+
+\end{enumerate}
+
+\subsection{大学院関連}
+\begin{enumerate}
+
+\item 特になし
+\hfill
+\label{enum-17}
+
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+\end{document}
