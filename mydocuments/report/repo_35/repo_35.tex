@@ -1,0 +1,246 @@
+\documentclass[fleqn, 14pt]{extarticle}
+\usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{comment}
+\tolerance=1000
+\subtitle{(2015年8月25日$\sim$2015年9月24日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室M1\\藤田 将輝}
+\date{2015年9月25日}
+\title{記録書 No.35}
+\hypersetup{
+    pdfkeywords={},
+    pdfsubject={},
+    pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+    \begin{document}
+    \maketitle
+
+    \section{前回ミーティングからの指導・指摘事項}
+    \label{sec-1}
+    \begin{enumerate}
+        \item イベントを途中退席する際は，周囲に報告する．
+            \newline
+            \hfill
+
+    \end{enumerate}
+
+    \section{実績}
+    \label{sec-2}
+
+    \subsection{研究関連}
+    \label{sec-2-1}
+    \begin{enumerate}
+
+        \item 研究テーマに関する項目
+            \hfill
+            \label{enum-research1}
+            \begin{enumerate}
+
+                \item 参考文献の読解
+                    \hfill
+                    \label{enum-1-A}
+                    (50％，+0％)
+
+                \item 正常に処理できる通信量の測定
+                    \hfill
+                    \label{enum-1-B}
+                    (100％，+70％)
+
+                \item バグの再現
+                    \hfill
+                    \label{enum-1-C}
+                    (0％，+0％)
+
+            \end{enumerate}
+
+        \item 開発に関する項目
+            \hfill
+            \label{enum-research2}
+            \begin{enumerate}
+
+                \item 自動ビルドスクリプトの作成
+                    \hfill
+                    \label{enum-2-A}
+                    (95％，+0％)
+
+            \end{enumerate}
+
+        \item 第283回New打ち合わせ
+            \hfill
+            \label{enum-research3}
+            (8/25)
+
+        \item 第284回New打ち合わせ
+            \hfill
+            \label{enum-research3}
+            (9/8)
+
+        \item 第25回New開発打ち合わせ 
+            \hfill
+            \label{enum-research3}
+            (9/17)
+
+        \item 第285回New打ち合わせ
+            \hfill
+            \label{enum-research3}
+            (9/18)
+
+    \end{enumerate}
+
+    \subsection{研究室関連}
+    \label{sec-2-2}
+    \begin{enumerate}
+
+        \item 全体ミーティング
+            \hfill
+            \label{enum-lab1}
+            (8/25)
+
+        \item 乃村研ミーティング
+            \hfill
+            \label{enum-lab1}
+            (8/31)
+
+        \item 2015年度香川大学岡山大学合同研究会
+            \hfill
+            \label{enum-lab1}
+            (9/7)
+
+        \item 乃村研ミーティング
+            \hfill
+            \label{enum-lab1}
+            (9/18)
+
+    \end{enumerate}
+
+    \subsection{大学院関連}
+    \label{sec2-3}
+    \begin{enumerate}
+
+        \item 特になし
+            \hfill
+            \label{enum-univ1}
+
+    \end{enumerate}
+
+    \section{詳細および反省・感想}
+    \label{sec-3}
+
+    %\setcounter{subsection}{1}
+    \subsection{研究関連}
+    \label{sec-3-2}
+
+    \begin{itemize}
+
+        \item[(\ref{enum-1-B})]
+            本デバッグ支援環境の動作を確認した．具体的にはデバッグ支援OSか
+            らデバッグ対象OSへパケットを送信した際のスループットについて測
+            定することで，実際のNICの性能を再現することに十分な性能を実現できてい
+            るかを調査した．測定結果は，NICドライバで処理できる最大のスル
+            ープットが10Gbpsであり，デバッグ対象OS上で動作するUDPの受信プ
+            ログラムが処理できる最大のスループットが7.7Gbpsであった．実際
+            のNICは2.5Gbps相当であるため，十分にNICを再現できる性能を持っ
+            ていることを示せた．
+
+    \end{itemize}
+
+    \section{今後の予定}
+    \label{sec-4}
+
+    \subsection{研究関連}
+    \label{sec-4-1}
+
+    \begin{enumerate}
+
+        \item 研究テーマに関する項目
+            \hfill
+            \begin{enumerate}
+
+                \item 参考文献の読解
+                    \hfill
+                    (10月中旬)
+
+                \item バグの再現
+                    \hfill
+                    (10月上旬)
+
+            \end{enumerate}
+
+        \item 開発に関する項目
+            \hfill
+            \begin{enumerate}
+
+                \item 自動ビルドスクリプトの作成
+                    \hfill
+                    (10月中旬)
+
+            \end{enumerate}
+
+        \item 第286回New打ち合わせ
+            \hfill
+            \label{enum-7}
+            (10/2)
+
+        \item 第26回New開発打ち合わせ
+            \hfill
+            \label{enum-7}
+            (10/8)
+
+    \end{enumerate}
+
+    \subsection{研究室関連}
+    \label{sec-4-2}
+
+    \begin{enumerate}
+
+        \item 全体ミーティング
+            \hfill
+            \label{enum-18}
+            (9/25)
+
+        \item 乃村研合宿
+            \hfill
+            \label{enum-18}
+            (9/29,30)
+
+        \item 乃村研ミーティング
+            \hfill
+            \label{enum-18}
+            (10/9)
+
+    \end{enumerate}
+
+    \subsection{大学院関連}
+    \begin{enumerate}
+
+        \item 特になし
+            \hfill
+            \label{enum-17}
+
+    \end{enumerate}
+
+    \subsection{学会情報} 
+    \begin{enumerate}
+        \item 第135回システムソフトウェアとオペレーティング・システム研究会\\
+            開催日時：平成27年11月24日(火)\\
+            開催場所：お茶の水女子大学
+            申込締切：平成27年10月16日(金)\\
+            原稿締め切り：平成27年10月30日(金)\\
+    \end{enumerate}
+
+    \end{document}
