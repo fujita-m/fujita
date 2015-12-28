@@ -81,7 +81,7 @@ PROJECT		= sigos136-kobe-fujita
 #   graphics/fig1.pdf ... graphics/fig5.pdf from graphics/fig.pdf
 #
 FIG_MASTER_FILE = figs/fig.pdf
-FIG_PAGES       = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
+FIG_PAGES       = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35
 PROJECT_BIB    = ${BIB_FILES}/mybibdata.bib
 
 TEX_FILES      = ${PROJECT}.tex
