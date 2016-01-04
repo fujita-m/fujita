@@ -1,0 +1,130 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE メモリバスの帯域幅の測定}
+\end{center}
+
+\begin{flushright}
+    2015/12/17\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+
+デバッグ支援環境を用いたNICドライバの性能測定において，
+パケットサイズが16KBの場合，30Gbpsを実現していると測定した．
+本デバッグ支援環境ではNICハードウェアを用いずにパケットの通信を行なっているおり，
+メモリのみを用いて通信を行なっている．
+このため，PCIバス等を用いる通信と比べて大きな通信量を実現できていると考えられる．
+測定した通信量が妥当であることを検証するため，自身の測定環境におけるメモリバスの
+帯域幅を調査した．
+具体的には自身の計算機のメモリ規格とこの最大転送量(理論値)を調査した．
+また，実際にメモリを用いて，データを複写する操作を行うことで，帯域幅を算出した．
+
+\section{メモリ規格と最大通信量}
+測定環境におけるメモリ規格は，PC3-10600 DDR3-SDRAM (dual channel)であることが分かった．
+また，この最大の転送量は165.6Gbpsであった．
+これらの情報を含めた測定環境を表\ref{kankyou}に示す．
+
+\begin{table}[h]
+    \caption{測定環境}
+    \label{kankyou}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            項目名      & 環境    \\ \hline
+            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+            メモリ      & PC3-10600 DDR3-SDRAM (dual channel) @ 165.6Gbps \\
+            NICドライバ & RTL8169    \\ 
+            ソースコード& r8169.c \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\section{メモリ帯域幅の測定}
+\subsection{測定方法}
+自身の計算機におけるメモリ規格とその最大転送量がわかった．
+この転送量相当を実現できることを示すため，10μsの間，8KBのデータを複写し続ける
+システムコールを作成した．
+このシステムコールの処理流れ図1に示し以下で説明する．
+
+\insertfigure[0.3]{fig:frame}{fig1}{測定フロー}{ipi route}
+\begin{enumerate}
+    \item rdtscを用いてタイムスタンプを取得する．
+    \item ループを開始し，8KBのデータを{\tt memcpy()}を用いて繰り返し行う．
+    \item {\tt memcpy()}を終えると，カウンタをインクリメントする．
+    \item rdtscを用いてタイムスタンプを取得する．
+    \item (1)のタイムスタンプと(3)のタイムスタンプの差分が10μsを超えると
+        ループを抜ける．超えていなければ(2)に戻る．
+    \item カウンタを返却する．
+\end{enumerate}
+
+\subsection{測定結果}
+返却された値は22回であった．
+したがって，8KBのメモリ複写が22回行われたことが分かった．
+この値と10μsから，測定できたメモリ帯域幅は約134Gbpsであることが分かった．
+2章から最大の転送量は165.6Gbpsであることがわかっている．
+測定したメモリ帯域幅が最大値を超えておらず，際立って小さいこともないため，
+測定結果は妥当であると言える．
+
+\section{考察}
+
+3章からメモリの転送量の最大は約134Gbpsであることが分かった．
+一方，デバッグ支援環境を用いたNICドライバの性能測定では，
+最大で約30Gbpsであることがわかっている．
+この差は，NICドライバのパケット受信処理中で，メモリからパケットを複写する
+処理以外に長い時間がかかっていることから生じると考えられる．
+
+\section{おわりに}
+
+本資料では，測定環境におけるメモリの最大転送量を調査した．
+理論値は165.6Gbpsであり，実測値は134Gbpsであった．
+NICドライバにおける最大の転送量は30Gbpsであり，
+パケット受信処理中でメモリ複写以外に多くの時間がかかっていることが考えられる．
+今後は，受信処理について詳細に調査し，結果が妥当であることを示す．
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}
+
+

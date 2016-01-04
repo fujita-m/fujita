@@ -1,0 +1,189 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE Mintを用いたNICドライバの割り込みデバッグ支援環境の評価}
+\end{center}
+
+\begin{flushright}
+    2015/12/08\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では，Mintを用いたNICドライバの割り込みデバッグ支援環境の評価について述べる．
+まず，本デバッグ支援環境におけるパケット長による送信処理の時間についてを測定し，
+どの程度の間隔でパケットを送信できるかを評価する．
+次に，本デバッグ支援環境を使用した際，どの程度の通信量を実現できるかを測定し，評価する．
+最後に，本デバッグ支援環境を用いて連続でパケットを送信した際に，NICドライバとEnd-to-End
+で処理できるパケットの数に，どの程度の差があるかを示す．
+
+\section{評価環境}
+
+評価環境を表\ref{environment}に示す．
+
+\begin{table}[h]
+    \caption{測定環境}
+    \label{environment}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            項目名      & 環境                                    \\ \hline
+            OS          & Fedora14 x86\_64(Mint 3.0.8)            \\ 
+            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\
+            メモリ      & 2GB                                     \\
+            Chipset     & Intel(R) 5 Series/3400                  \\
+            NIC         & RTL8111/8168B                           \\
+            NICドライバ & RTL8169                                 \\ 
+            ソースコード& r8169.c                                 \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\section{送信処理時間の測定}
+
+本環境を用いた際，どの程度の短い間隔ならばパケットを送信できるかを測定した．
+パケットの送信処理には，パケットをメモリにコピーする処理が含まれているため，
+送信処理時間は，パケット長が増加する毎に1次関数的に増加するものと考えられる．
+これを示すため，いくつかのパケット長の条件下で，送信処理時間を測定した．
+具体的には，3000回の送信処理中の1000回〜2000回目の処理時間の平均を求める．
+最初の処理と最後の処理には不確定要素が含まれると考えられるため，間の1000回の
+時間から平均を取る．
+結果を表\ref{tx-time}に示す．また，結果が1次関数的に増加していることを示すため，
+パケット長と処理時間の関係を図\ref{fig:tx-time}に示す．
+本デバッグ支援環境では，1処理毎に表2に示している時間は必ずかかるため，表2に示した
+以上の間隔を指定する必要がある．
+
+\insertfigure[0.6]{fig:tx-time}{fig1}{パケットサイズと送信処理時間の関係}{ipi route}
+
+\begin{table}[h]
+    \caption{各パケットサイズにおける送信処理時間}
+    \label{tx-time}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            パケットサイズ (KB)      & 処理時間 (μs)    \\ \hline
+            1                        & 0.175            \\
+            1.5                      & 0.205            \\
+            4                        & 0.766            \\
+            8                        & 1.462            \\
+            12                       & 2.131            \\
+            16                       & 3.664            \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\section{実現できる通信量の測定}
+
+本デバッグ支援環境で実現できる通信量について測定する．
+具体的には，いくつかのサイズのEthernetFrame(UDPパケット)を5000回連続で送信することを1サイクルとし，
+送信間隔を増加させながら何サイクルも行い，全てのパケットを処理できる最も短い間隔の際の時間から通信量を測定した．
+受信の成功は，NICドライバでパケットをソケットバッファに格納する処理を通ることとした．
+また，実NICを用いた場合と比較するため，実NICを用いた際の通信量も併せて測定する．
+実NICを用いて通信する際の，MTU(Maximum Transmission Unit)は1.5KBであるため，
+パケット長は1.5KBとした．
+結果を表\ref{throughput-nic}に示す．
+結果から，実NICを大きく超える通信量を実現できていることがわかる．
+また，最高で30Gbpsを実現できており，現在は開発されていない高速なNICをシミュレートできると考えられる．
+
+\begin{table}[h]
+    \caption{各パケットサイズにおける実現可能な通信量}
+    \label{throughput-nic}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            パケットサイズ (KB)      & 通信量 (Gbps)    \\ \hline
+            1                        & 4.6            \\
+            1.5(実NIC)               & 0.92            \\
+            1.5                      & 6.3            \\
+            4                        & 17.4            \\
+            8                        & 22.7            \\
+            12                       & 29.6            \\
+            16                       & 30.6            \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\section{NICドライバとEnd-to-Endにおける処理可能なパケット数の測定}
+本環境を用いて，連続でパケットを処理させる際，以下の2つの条件でどれだけ差がであるかを測定した．
+\begin{description}
+    \item[(条件1)] NICドライバで処理するパケットをカウント
+    \item[(条件2)] End-to-Endで処理するパケットをカウント
+\end{description}
+デバッグ支援OSからパケットを送信し，デバッグ対象OSでパケットを受信する際，NICドライバ，プロトコルスタックを
+経由して，APまでパケットが配送される．本環境を用いると，NICドライバで処理できる限界の時間とEnd-to-Endで処理できる
+限界の時間を測定し，プロトコルスタックの影響を調査できる．
+測定の構成を図\ref{fig:structure}に示し，説明する．
+\insertfigure[0.7]{fig:structure}{fig4}{測定の構成図}{ipi route}
+\begin{enumerate}
+    \item デバッグ支援OS上で動作する割り込みジェネレータにより，
+        パケットの作成，割り込み回数の指定，および割り込み間隔の指定を行う．
+    \item システムコールにより，デバッグ支援機構が動作し，送信処理を行う．
+    \item NICドライバがパケットを受信する．条件1ではここで処理するパケットの数を
+        カウントする．
+    \item APにパケットが届く，条件2ではここで処理するパケットの数をカウントする．
+\end{enumerate}
+
+結果を図\ref{fig:nic-result}と図\ref{fig:ap-result}に示す．
+結果から，受信成功率が100\%になるまでの時間は，図\ref{fig:ap-result}の方が長いことが分かる．
+この差は，プロトコルスタックによる影響であると考えられる．また，図\ref{fig:ap-result}は
+受信成功率が大きく下がる部分がある．NICドライバ側では，受信成功率が100\%を超えると
+大きく落ち込むことはないため，これもプロトコルスタックに影響が大きいと考えられる．
+CPU性能を高めたり，プロトコルスタックのアルゴリズムを高速なものにしたりして，
+プロトコルスタックの処理を早くするとこれらの差は小さくなると考えられる．
+このように，本環境を用いると，実NICを用いずにドライバやプロトコルスタックの診断を
+行える．
+
+\insertfigure[0.6]{fig:nic-result}{fig2}{NICドライバにおけるIPI送信間隔と受信成功率の関係}{ipi route}
+\insertfigure[0.6]{fig:ap-result}{fig3}{NICドライバにおけるIPI送信間隔と受信成功率の関係}{ipi route}
+
+\section{おわりに}
+
+本資料では，Mintを用いたNICドライバのデバッグ支援環境の評価を行った．
+本デバッグ支援環境を用いることで，最速で約200nsの割り込み間隔を実現できる．
+また，最高で約30Gbpsの通信量を実現できる．
+さらに，本デバッグ支援環境を用いることで，プロトコルスタックの影響がどのように
+現れるかを示した．
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}
+
+

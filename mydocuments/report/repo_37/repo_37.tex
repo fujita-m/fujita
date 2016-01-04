@@ -1,0 +1,255 @@
+\documentclass[fleqn, 14pt]{extarticle}
+\usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{comment}
+\tolerance=1000
+\subtitle{(2015年9月25日$\sim$2015年10月27日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室M1\\藤田 将輝}
+\date{2015年10月27日}
+\title{記録書 No.37}
+\hypersetup{
+    pdfkeywords={},
+    pdfsubject={},
+    pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+    \begin{document}
+    \maketitle
+
+    \section{前回ミーティングからの指導・指摘事項}
+    \label{sec-1}
+    \begin{enumerate}
+        \item 失敗をした際は具体的な対策を検討し，実行する．
+            \hfill
+            [10/16, メール，乃村先生]
+            \newline
+
+    \end{enumerate}
+
+    \section{実績}
+    \label{sec-2}
+
+    \subsection{研究関連}
+    \label{sec-2-1}
+    \begin{enumerate}
+
+        \item 研究テーマに関する項目
+            \hfill
+            \label{enum-research1}
+            \begin{enumerate}
+
+                \item 参考文献の読解
+                    \hfill
+                    \label{enum-1-A}
+                    (50％，+0％)
+
+                \item 正常に処理できる通信量の測定
+                    \hfill
+                    \label{enum-1-B}
+                    (90％，+20％)
+
+                \item バグの再現
+                    \hfill
+                    \label{enum-1-C}
+                    (0％，+0％)
+
+            \end{enumerate}
+
+        \item 開発に関する項目
+            \hfill
+            \label{enum-research2}
+            \begin{enumerate}
+
+                \item 自動ビルドスクリプトの作成
+                    \hfill
+                    \label{enum-2-A}
+                    (95％，+0％)
+
+                \item MintのGRUB2への対応
+                    \hfill
+                    \label{enum-2-B}
+                    (90％，+90％)
+
+            \end{enumerate}
+
+        \item 第286回New打ち合わせ
+            \hfill
+            \label{enum-research3}
+            (10/02)
+
+        \item 第27回New開発打ち合わせ 
+            \hfill
+            \label{enum-research3}
+            (10/08)
+
+        \item 第287回New打ち合わせ
+            \hfill
+            \label{enum-research3}
+            (10/13)
+
+        \item 第28回New開発打ち合わせ 
+            \hfill
+            \label{enum-research3}
+            (10/22)
+
+    \end{enumerate}
+
+    \subsection{研究室関連}
+    \label{sec-2-2}
+    \begin{enumerate}
+
+        \item 全体ミーティング
+            \hfill
+            \label{enum-lab1}
+            (9/25)
+
+        \item Rails勉強会
+            \hfill
+            \label{enum-lab1}
+            (9/28)
+
+        \item 乃村研究室研修会
+            \hfill
+            \label{enum-lab1}
+            (9/29,30)
+
+        \item 乃村研ミーティング
+            \hfill
+            \label{enum-lab1}
+            (10/09)
+
+        \item 乃村杯
+            \hfill
+            \label{enum-lab1}
+            (10/09)
+
+    \end{enumerate}
+
+    \subsection{大学院関連}
+    \label{sec2-3}
+    \begin{enumerate}
+
+        \item 特になし
+            \hfill
+            \label{enum-univ1}
+
+    \end{enumerate}
+
+    \section{詳細および反省・感想}
+    \label{sec-3}
+
+    %\setcounter{subsection}{1}
+    \subsection{研究関連}
+    \label{sec-3-2}
+
+    \begin{itemize}
+
+        \item[(\ref{enum-2-B})]
+            GRUB2を用いてMintのOSノードを起動した際，起動対象のOSが指定したメモリ位置に
+            カーネルを配置できていないことが分かった．これは改変したセットアップルーチンを
+            GRUB2では通らないことが原因であった．このため，起動したOSノードをKexecを用いて
+            再起動することにより，指定したメモリ位置にカーネルを配置できた．今後，これらの操作による
+            不具合の有無を調査する．
+
+    \end{itemize}
+
+    \section{今後の予定}
+    \label{sec-4}
+
+    \subsection{研究関連}
+    \label{sec-4-1}
+
+    \begin{enumerate}
+
+        \item 研究テーマに関する項目
+            \hfill
+            \begin{enumerate}
+
+                \item 参考文献の読解
+                    \hfill
+                    (11月中旬)
+
+                \item バグの再現
+                    \hfill
+                    (11月上旬)
+
+            \end{enumerate}
+
+        \item 開発に関する項目
+            \hfill
+            \begin{enumerate}
+
+                \item 自動ビルドスクリプトの作成
+                    \hfill
+                    (11月中旬)
+
+            \end{enumerate}
+
+        \item 第288回New打ち合わせ
+            \hfill
+            \label{enum-7}
+            (10/29)
+
+        \item 第28回New開発打ち合わせ
+            \hfill
+            \label{enum-7}
+            (11/06)
+
+    \end{enumerate}
+
+    \subsection{研究室関連}
+    \label{sec-4-2}
+
+    \begin{enumerate}
+
+        \item 全体ミーティング
+            \hfill
+            \label{enum-18}
+            (10/27)
+
+        \item 平成27年度第2回部屋別対抗ボウリング大会
+            \hfill
+            \label{enum-18}
+            (10/27)
+
+        \item 平成27年度M2およびM1論文紹介
+            \hfill
+            \label{enum-18}
+            (10/30)
+
+        \item 乃村研究室忘年会
+            \hfill
+            \label{enum-18}
+            (11/14)
+
+        \item SWLAB忘年会
+            \hfill
+            \label{enum-18}
+            (12/01)
+
+    \end{enumerate}
+
+    \subsection{大学院関連}
+    \begin{enumerate}
+
+        \item 特になし
+            \hfill
+            \label{enum-17}
+
+    \end{enumerate}
+
+    \end{document}

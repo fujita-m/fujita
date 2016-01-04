@@ -1,0 +1,184 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE パケットの送受信処理時間の測定}
+\end{center}
+
+\begin{flushright}
+    2015/11/25\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本デバッグ支援環境において，いくつかのパケットサイズによる送受信処理でどの程度
+時間がかかるかを測定した．この時間を正しく測定することにより，
+本環境を使用した際の受信可能なIPIの間隔とサイズがわかる．
+本資料では，本デバッグ支援環境を用いた際の送信処理と受信処理流れ，
+およびそれぞれの処理時間をパケットサイズを変更しながら測定した際の結果を示す．
+
+\section{送受信処理流れ}
+\subsection{送信処理}\label{tx}
+本デバッグ支援環境における送信処理の流れを以下に示す．
+\begin{enumerate}
+    \item Mintの共有メモリにあるNICの受信ディスクリプタを
+        受信済み状態に更新する．これにより，NICが受信バッファから
+        パケットを取得できる状態となる．
+    \item NICの受信バッファにあらかじめ用意していたパケットを
+        格納する．この際，複数のパケットは配置せず，1つのパケットのみ
+        を配置する．また，パケットとは，UDPのフレームである．
+    \item 指定した間隔になるまで処理を待たせる．これは，rdtscで(1)の
+        処理の始めのタイムスタンプを取り，そこから指定した時間になるまで
+        ループを回すことで実現している．
+    \item 共有メモリに配置している割り込みの禁止/許可を示すフラグを
+        確認し，許可状態であればIPIを送信する．禁止状態であれば
+        IPIを送信せず処理を終了する．
+\end{enumerate}
+上記の処理を指定した回数ループさせることにより，連続でパケットを送信する．
+
+\subsection{受信処理}\label{rx}
+本デバッグ支援環境における受信処理の流れを以下に示す．
+\begin{enumerate}
+    \item IPIを受け，割り込みハンドラが動作する．Mintの共有メモリに配置している
+        割り込みの禁止/許可を表すフラグを更新し，割り込み禁止状態にする．
+        このあと，ソフト割り込みを発生させる．
+    \item ソフト割り込みのハンドラが動作し，NICドライバのポーリング関数を呼び出す．
+    \item NICドライバのポーリング関数が呼び出され，パケット受信処理関数を呼び出す．
+    \item パケット受信処理を行う．NICの受信バッファからパケットを取り出し，
+        ソケットバッファに格納し，上位層へ送信する．
+        全てのパケット処理が終わると割り込みを許可する．
+\end{enumerate}
+
+\section{測定}
+\subsection{測定環境}
+測定環境を表\ref{environment}に示す．
+
+\begin{table}[h]
+    \caption{測定環境}
+    \label{environment}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            項目名      & 環境                                    \\ \hline
+            OS          & Fedora14 x86\_64(Mint 3.0.8)            \\ 
+            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\
+            メモリ      & 2GB                                     \\
+            Chipset     & Intel(R) 5 Series/3400                  \\
+            NIC         & RTL8111/8168B                           \\
+            NICドライバ & RTL8169                                 \\ 
+            ソースコード& r8169.c                                 \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+
+\subsection{測定方法}
+\subsubsection{送信処理}\label{tx-m}
+各パケットサイズにおける送信処理の処理時間を測定する．
+具体的には，rdtscを用いて，\ref{tx}節の(1)の処理の開始から(2)の処理の終了までの
+差分を取ることで，処理時間を測る．
+パケットサイズは以下の6つである．
+\begin{enumerate}
+    \item 1KB
+    \item 1.5KB
+    \item 4KB
+    \item 8KB
+    \item 12KB
+    \item 16KB
+\end{enumerate}
+
+\subsubsection{受信処理}
+各パケットサイズにおける受信処理の処理時間を測定する．
+パケットを処理している部分は\ref{rx}節の(4)であるため，
+以下の2つに分けて測定を行った．
+\renewcommand{\labelenumi}{(\Alph{enumi})}
+\begin{enumerate}
+    \item 割り込みが入ってからパケット受信処理が始まるまでの時間
+    \item パケット受信処理で1パケットを処理する時間
+\end{enumerate}
+パケット長に関わる処理は(B)の処理であるため，(A)の処理はパケット長にかかわらず一定であると考えられる．
+パケットサイズは\ref{tx-m}項と同じ6つである．
+
+\subsection{結果}
+\subsubsection{送信処理}
+\insertfigure[0.5]{fig:tx-1024}{fig16}{1KBのパケットにおける送信処理時間}{ipi route}
+\insertfigure[0.5]{fig:tx-1500}{fig17}{1.5KBのパケットにおける送信処理時間}{ipi route}
+\insertfigure[0.5]{fig:tx-4096}{fig18}{4KBのパケットにおける送信処理時間}{ipi route}
+\insertfigure[0.5]{fig:tx-8192}{fig19}{8KBのパケットにおける送信処理時間}{ipi route}
+\insertfigure[0.5]{fig:tx-12244}{fig20}{12KBのパケットにおける送信処理時間}{ipi route}
+\insertfigure[0.5]{fig:tx-16384}{fig21}{16KBのパケットにおける送信処理時間}{ipi route}
+各パケットにおける測定結果を図1〜6に示す．
+図からどのサイズでも一定間隔毎に飛び値が発生していることがわかる．
+これは，タイマ割り込みが関係していると考えているが，詳細は不明である．
+このため，これらの処理時間を定める際は，この飛び値を省いたもので平均を
+取ることが考えられる．
+また，256回前後で処理速度が短くなっていることが分かる．この原因についてはわかっていない．
+
+\subsubsection{受信処理A}
+受信処理Aの結果はパケット長に依らず一定であり，3μs前後であった．
+このため，この処理はパケットを操作する処理は行なっていないと言える．
+
+\subsubsection{受信処理B}
+\insertfigure[0.5]{fig:rx-1024}{fig9}{1KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-1500}{fig10}{1.5KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-4096}{fig11}{4KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-8192}{fig12}{8KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-12244}{fig13}{12KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:tx-16384}{fig14}{16KBのパケットにおける受信処理時間}{ipi route}
+各パケットにおける測定結果を図7〜12に示す．
+図から最初の処理に多大な時間がかかっていることがわかる．
+このため，実際の処理時間がわかりやすくなるように最初の処理を除いたものを図13〜18に示す．
+図から，最初の処理に時間がかかり，以降の処理はほとんど一定していることが分かる．
+また，パケットサイズが増大する毎に処理時間が長大していることが分かる．
+\insertfigure[0.5]{fig:rx-1024-s}{fig2}{最初の処理を省いた1KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-1500-s}{fig3}{最初の処理を省いた1.5KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-4096-s}{fig4}{最初の処理を省いた4KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-8192-s}{fig5}{最初の処理を省いた8KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-12244-s}{fig6}{最初の処理を省いた12KBのパケットにおける受信処理時間}{ipi route}
+\insertfigure[0.5]{fig:rx-16384-s}{fig7}{最初の処理を省いた16KBのパケットにおける受信処理時間}{ipi route}
+
+\section{おわりに}
+本資料ではパケットサイズによる送受信処理時間の変化を測定したことを示した．
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}

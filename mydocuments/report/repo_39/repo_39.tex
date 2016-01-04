@@ -1,0 +1,244 @@
+\documentclass[fleqn, 14pt]{extarticle}
+\usepackage{reportForm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{comment}
+\tolerance=1000
+\subtitle{(2015年10月27日$\sim$2015年11月18日)}
+\usepackage{strike}
+\setcounter{section}{-1}
+\author{乃村研究室M1\\藤田 将輝}
+\date{2015年11月19日}
+\title{記録書 No.39}
+\hypersetup{
+    pdfkeywords={},
+    pdfsubject={},
+    pdfcreator={Emacs 24.3.1 (Org mode 8.0.3)}}
+    \begin{document}
+    \maketitle
+
+    \section{前回ミーティングからの指導・指摘事項}
+    \label{sec-1}
+    \begin{enumerate}
+        \item 特になし
+    \end{enumerate}
+
+    \section{実績}
+    \label{sec-2}
+
+    \subsection{研究関連}
+    \label{sec-2-1}
+    \begin{enumerate}
+
+        \item 研究テーマに関する項目
+            \hfill
+            \label{enum-research1}
+            \begin{enumerate}
+
+                \item 参考文献の読解
+                    \hfill
+                    \label{enum-1-A}
+                    (50％，+0％)
+
+                \item 割り込みの禁止/許可の実装
+                    \hfill
+                    \label{enum-1-B}
+                    (90％，+90％)
+
+                \item バグの再現
+                    \hfill
+                    \label{enum-1-C}
+                    (0％，+0％)
+
+            \end{enumerate}
+
+        \item 開発に関する項目
+            \hfill
+            \label{enum-research2}
+            \begin{enumerate}
+
+                \item 自動ビルドスクリプトの作成
+                    \hfill
+                    \label{enum-2-A}
+                    (95％，+0％)
+
+                \item MintのGRUB2への対応
+                    \hfill
+                    \label{enum-2-B}
+                    (90％，+0％)
+
+            \end{enumerate}
+
+        \item 第288回New打ち合わせ
+            \hfill
+            \label{enum-research3}
+            (10/29)
+
+        \item 第29回New開発打ち合わせ 
+            \hfill
+            \label{enum-research3}
+            (11/06)
+
+        \item 第289回New打ち合わせ
+            \hfill
+            \label{enum-research3}
+            (11/11)
+
+    \end{enumerate}
+    \subsection{研究室関連}
+    \label{sec-2-2}
+    \begin{enumerate}
+
+        \item 全体ミーティング
+            \hfill
+            \label{enum-18}
+            (10/27)
+
+        \item 平成27年度第2回部屋別対抗ボウリング大会
+            \hfill
+            \label{enum-18}
+            (10/27)
+
+        \item 平成27年度M2およびM1論文紹介
+            \hfill
+            \label{enum-18}
+            (10/30)
+
+        \item 乃村研究室忘年会
+            \hfill
+            \label{enum-18}
+            (11/14)
+
+    \end{enumerate}
+
+    \subsection{大学院関連}
+    \label{sec2-3}
+    \begin{enumerate}
+
+        \item 特になし
+            \hfill
+            \label{enum-univ1}
+
+    \end{enumerate}
+
+    \section{詳細および反省・感想}
+    \label{sec-3}
+
+    %\setcounter{subsection}{1}
+    \subsection{研究関連}
+    \label{sec-3-2}
+
+    \begin{itemize}
+
+        \item[(\ref{enum-1-B})]
+            Mintを用いて，短い間隔で連続で割り込みを発生させる環境を構築している．
+            この環境を使用して，短い間隔で割り込みを連続で発生させた際，どの程度の
+            間隔とパケットサイズならばパケットの受信に成功するかを測定したところ，
+            パケットの処理中に適切に割り込みを禁止できていないことが分かった．
+            このため，割り込みの禁止/許可を実装している部分を特定し，実装した．
+            今後，この環境を用いて再測定を行い，正しい結果が得られることを示す．
+
+    \end{itemize}
+
+    \section{今後の予定}
+    \label{sec-4}
+
+    \subsection{研究関連}
+    \label{sec-4-1}
+
+    \begin{enumerate}
+
+        \item 研究テーマに関する項目
+            \hfill
+            \begin{enumerate}
+
+                \item 参考文献の読解
+                    \hfill
+                    (12月中旬)
+
+                \item 割り込みの禁止/許可の実装
+                    \hfill
+                    (12月上旬)
+
+                \item バグの再現
+                    \hfill
+                    (12月上旬)
+
+            \end{enumerate}
+
+        \item 開発に関する項目
+            \hfill
+            \begin{enumerate}
+
+                \item 自動ビルドスクリプトの作成
+                    \hfill
+                    (12月中旬)
+
+                \item MintのGRUB2への対応
+                    \hfill
+                    (12月中旬)
+
+            \end{enumerate}
+
+        \item 第30回New開発打ち合わせ
+            \hfill
+            \label{enum-7}
+            (11/24)
+
+        \item 第290回New打ち合わせ
+            \hfill
+            \label{enum-7}
+            (11/25)
+
+    \end{enumerate}
+
+    \subsection{研究室関連}
+    \label{sec-4-2}
+
+    \begin{enumerate}
+
+        \item 全体ミーティング
+            \hfill
+            \label{enum-18}
+            (11/29)
+
+        \item B4中間発表
+            \hfill
+            \label{enum-18}
+            (11/20)
+
+        \item M2中間発表
+            \hfill
+            \label{enum-18}
+            (12/01)
+
+        \item SWLAB忘年会
+            \hfill
+            \label{enum-18}
+            (12/01)
+
+    \end{enumerate}
+
+    \subsection{大学院関連}
+    \begin{enumerate}
+
+        \item 特になし
+            \hfill
+            \label{enum-17}
+
+    \end{enumerate}
+
+    \end{document}

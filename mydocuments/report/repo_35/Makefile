@@ -87,7 +87,7 @@ FIG_EBB_FILES := $(foreach n, $(FIG_PAGES), $(call addpage,$(FIG_MASTER_FILE),$(
 #####################################################################
 
 preview: ${PROJECT}.pdf
-	qpdfview $<
+	acroread $<
 
 all:	${PROJECT}.pdf
 
