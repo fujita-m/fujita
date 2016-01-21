@@ -1,0 +1,151 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE 送信処理におけるパケットの配置方法}
+\end{center}
+
+\begin{flushright}
+    2016/1/06\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本開発支援環境におけるパケットの送信処理を連続で動作させた際，
+パケットを受信バッファに配置していく．受信バッファのエントリは
+256エントリであり，受信処理時間より短い間隔でパケットを配置し続けると
+処理されていないパケットを上書きしてしまう．
+これは，実際のNICの処理と異なっており，上書きしないように処理を変更する
+必要がある．
+本資料では，開発支援環境におけるパケット送信処理をパケットを上書きしないように
+変更したことを示す．
+
+\section{変更点}
+パケット送信処理において，受信バッファにパケットを配置する際，配置しようとした
+エントリに未処理のパケットがある，ないにかかわらずメモリ複写を行い，上書きしていた．
+これは，実際のNICの処理とは異なっており，本環境は実際のNICの処理を再現する必要があるため，
+上書きせず，配置しようとした位置にパケットがあった場合は，配置しようとしたパケットを廃棄するように
+変更した．
+変更前の処理流れを以下に示す．
+\begin{enumerate}
+    \item 受信ディスクリプタを変更し，受信済み状態にする．
+    \item 受信バッファにパケットを配置する．
+    \item 指定した時間となるまで，Waitする．
+    \item IPIを送信する．
+\end{enumerate}
+変更後の処理流れを以下に示す．
+\begin{enumerate}
+    \item 受信ディスクリプタを確認し，受信済み状態かどうかを確認する．
+        受信済み状態でなければ(パケットが配置されていなければ)，(2)へ進み，
+        受信済み状態であれば(パケットが配置されていれば)，(3)へ進む．
+    \item 受信バッファにパケットを配置する．
+    \item 指定した時間となるまで，Waitする．
+    \item IPIを送信する．
+\end{enumerate}
+変更点は以下の1処理である．
+\begin{enumerate}
+    \item 送信処理の最初に受信ディスクリプタを確認し，受信済みでない場合にのみ，
+        パケットを配置するように変更．
+\end{enumerate}
+
+\section{測定}
+\subsection{テスト項目}
+処理を変更した開発支援環境を用いて，NICドライバのテストを行った．
+テスト項目を以下に示す．
+\begin{description}
+    \item[(項目1)]NICドライバにおいて処理可能な送信処理の間隔
+    \item[(項目2)]NICドライバで実現可能な通信量
+\end{description}
+
+\subsection{測定方法}
+複数のパケットを指定した間隔で送信し受信成功率を求めることを1サイクル
+として複数サイクル行う．これにより，(項目1)の処理可能な送信間隔を求める．
+また，1サイクルにかかる時間を測ることで，(項目2)の実現可能な通信量を求める．受信成功率が初めて100\%になった時の
+時間とデータ量から通信量を求める．
+これらの測定は，いずれも3つのパケットサイズを用いて行う．
+ここでパケットのサイズとはUDPパケットを含んだEthernetFrameのサイズとする．
+1サイクルの詳細を以下に示す．
+\begin{enumerate}
+    \item 送信処理の動作間隔を指定し，5000回連続で動作させる．
+    \item 開発対象OSのNICドライバで処理できたことを成功とし，成功数をカウントする．
+    \item 成功数から受信成功率を求める．
+\end{enumerate}
+
+\subsection{項目1の結果}
+\insertfigure[0.6]{res}{fig1}{送信処理動作間隔とNICドライバにおけるパケット受信成功率の関係}{ipi route}
+結果を図\ref{res}に示し，以下で説明する．
+図中の丸印は各パケットサイズでの送信処理の最小値であり，これ以下の間隔は実現できない．
+パケットサイズが増大する毎に受信成功率が100\%になる送信処理動作間隔が増大していることがわかる．
+この結果は，変更前とほとんど変わらない．
+これは，変更を加えても落ちるパケットのシーケンス番号が変わるだけで，落ちる数は変わらないためだと考えられる．
+
+\subsection{項目2の結果}
+結果を表\ref{throughput-nic}に示し，以下で説明する．
+項目1にほとんど変化がないため，こちらにもあまり変化がない．
+これらから，本資料の変更は各テスト項目には影響がないことが分かる．
+本資料の変更は連続で複数のパケットを送信した際のどのパケットが落ちるか，といった
+テストに影響がでると思われる．
+
+\begin{table}[h]
+    \caption{各パケットサイズにおける実現可能な通信量}
+    \label{throughput-nic}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            パケットサイズ (KB)      & 通信量 (Gbps)  \\ \hline
+            1.5(実NIC)               & 0.92           \\
+            1.5                      & 6.7            \\
+            8                        & 23.5           \\
+            16                       & 30.7           \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\section{おわりに}
+本資料では，実際のNICの動作を再現するために本開発支援環境における送信処理を変更したことを
+示した．この変更による各テスト項目の影響は無く，落ちるパケットの位置等に影響が出ると考えられる．
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}
+
+
