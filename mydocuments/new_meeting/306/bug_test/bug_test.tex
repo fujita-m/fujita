@@ -1,0 +1,97 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE 調査したバグを発見するテストについて}
+\end{center}
+
+\begin{flushright}
+    2016/8/3\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+本資料では，バグを発見するテストについて考察したことをまとめたものである．
+＜304-04＞で挙げたバグを発見できるようなテストについて考察した．
+また，考察したテストを実施することにより，バグの発見を補助できることを
+確認した．以降で，調査したバグ，考察したテスト，およびその実施について
+示す．
+
+
+\section{バグ}
+本開発支援環境を用いて，＜304-04＞で挙げたバグを発見できるテストについて考察し，実際にテストを実施することにより，
+バグを発見できることを示す．
+＜304−04＞で挙げたバグについて，以下に示す．
+\begin{description}
+    \item[(バグ1)]チェックサムを確認するタイミングに関するバグ\\
+        受信したパケットのチェックサムを確認するタイミングを誤っているため，チェックサムの確認が不要なパケットであっても
+        全てのパケットに対してチェックサムを確認してしまうバグである．これにより，リソースを必要以上に消費してしまうと
+        考えられる．
+    \item[(バグ2)]大きなサイズのパケットを受信した場合，マシンをクラッシュさせるバグ\\
+        アロケートしたバッファサイズよりも大きなパケットの受信を許してしまうことにより，カーネル空間を侵害し，システムをクラッシュ
+        させる可能性があるバグである．
+    \item[(バグ3)]Ethernet frameのヘッダ分を加算されたパケットサイズを認識できないバグ\\
+        パケットのフィルタリング機能とアロケートするバッファサイズの関係に不一致があることにより，受信可能であるはずのパケットまで
+        フィルタにより破棄されてしまうバグである．
+\end{description}
+
+
+\section{テスト}
+\subsection{概要}
+調査したバグを発見できるようなテストについて考察した．
+(バグ1)について，チェックサムを全てのパケットに対して行うため，CPUに高負荷がかかると
+考えられる．そこで，CPU使用率を監視するテストを考察する．
+(バグ2)と(バグ3)について，パケットサイズに関するバグであり，パケットフィルタに関するものであるため，
+徐々にパケットサイズを増加させ，挙動を監視するテストを考察する．
+
+\subsection{CPU使用率を監視するテスト}
+
+\subsection{徐々にパケットサイズを増加させるテスト}
+
+
+\section{おわりに}
+
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}

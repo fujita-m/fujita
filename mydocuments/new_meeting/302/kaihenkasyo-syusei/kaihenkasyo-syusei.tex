@@ -1,0 +1,326 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE 開発支援環境におけるNICドライバの改変箇所まとめ(修正版)}
+\end{center}
+
+\begin{flushright}
+    2016/5/31\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+開発支援環境を実装するにあたり，NICドライバを改変した．
+本資料では，開発支援環境の実装におけるNICドライバの改変目的
+と改変箇所についてまとめている．この改変については，GitHubの\mbox{fujita-m/Mint}の
+\mbox{dev\_support}ブランチにおける
+コミット \mbox{3931b69c66d7447a4f2f7cff18175145eb1a0164}(コミットID)に示されている．
+前回の資料では以下の内容が記載されておらず，目的や改変量が不明確であった．
+このため，これを追記した．
+\begin{enumerate}
+    \item それぞれの改変が全体として何を実現するのか．
+    \item 関連関数と改変箇所の対応．
+    \item 既存関数のどの部分を改変し，どの程度改変を加えたか．
+\end{enumerate}
+
+\section{修正箇所}
+前回の資料からの修正箇所について以下に示す．
+\begin{enumerate}
+    \item それぞれの改変が全体として何を実現するかを追記
+        \begin{description}
+            \item [(修正前)]4章改変目的において，その改変が開発支援環境全体でどのような機能を実現するかを記載していない．
+            \item [(修正後)]4章改変目的において，その改変が全体としてどのような機能を実現するものかを記載した．
+        \end{description}
+    \item 改変箇所と関連関数を対応
+        \begin{description}
+            \item [(修正前)]改変箇所と関連関数を別の章に記載しており，対応が不明であった．
+            \item [(修正後)]改変箇所に関連関数を追記することにより，どの関数を改変したかを明確にした．
+        \end{description}
+    \item 関数のどの部分を改変し，どの程度改変を加えたかを追記
+        \begin{description}
+            \item [(修正前)]関連関数のどの部分を改変したかとどの程度改変を加えたかを記載していない．
+            \item [(修正後)]それぞれの改変について，どの関数を何行改変したかを6章において表として示した．
+        \end{description}
+\end{enumerate}
+
+\section{実装環境}
+実装環境を表1に示す．
+
+\begin{table}[h]
+    \caption{実装環境}
+    \label{kankyou}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            項目名      & 環境    \\ \hline
+            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+            メモリ      & PC3-10600 DDR3-SDRAM (dual channel) @ 165.6Gbps \\
+            Chipset     & Intel P55 @ 16Gbps \\
+            NICドライバ & RTL8169    \\ 
+            ソースコード& r8169.c \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\section{改変目的}
+本開発支援環境では，開発支援OSがNICハードウェアの動作を擬似することで，
+割込間隔や割込回数を制御可能にする．
+割込間隔や割込回数はハードウェアに依存するため，制御が困難である．
+これを開発支援OSが擬似することにより，ソフトウェアによる制御が可能になり，割込間隔等の指定が容易になる．
+開発支援OSのNICハードウェアの擬似にNICドライバを対応させるためには，NICドライバに以下の4つの改変が必要になる．
+\begin{enumerate}
+    \item 割込契機の変更\\
+        NICハードウェアはパケットをメモリに配置し終えるとCPUに割込を発生させる．
+        この割込はI/O APICを通じてコアに通知される．
+        本開発支援環境ではNICハードウェアを開発支援OSが擬似するため，
+        この割込を再現する必要がある．
+        本開発支援環境では割込処理の契機をコア間の割込であるIPIとした．
+        これにより，NICハードウェアを用いずに割込の通知が可能になる．
+        割込対象OSではIPIによって割込処理が開始するようNICドライバを改変する必要がある．
+    \item 受信ディスクリプタ，受信バッファのアドレス変更\\
+        NICハードウェアは受信したパケットをメモリに配置する．
+        メモリにパケットを配置する機能は開発支援OSで実装した．
+        この際，パケットの配置先はNICドライバが管理する受信バッファである．
+        また，NICドライバは受信バッファの状態を管理する受信ディスクリプタを参照することで
+        パケットの受信処理を行う．NICハードウェアはパケットを配置すると受信ディスクリプタを
+        更新し，受信状態にする．これにより，NICドライバが受信バッファのどのエントリにパケットを
+        受信したかを認識する．これらのため，受信ディスクリプタと受信バッファを
+        開発支援OSと開発対象OSで参照可能にする必要がある．
+        したがって，受信ディスクリプタと受信バッファをMintの共有メモリに配置することにより
+        これを実現する．
+        受信ディスクリプタと受信バッファの初期化はNICドライバで行うため，初期化時に
+        これらの配置位置をMintの共有メモリ内に固定することで両OSから参照可能にする．
+    \item 割込ステータスの調整\\
+        NICドライバは割込を受けると直ぐにパケット受信処理を行うわけではない．
+        NICドライバが割込を受けた際に行うのは，NICハードウェアからの割込の禁止と
+        カーネルへのパケット処理の依頼の2つのみである．
+        これは割込処理は最小限に止め，他の処理に影響しないようにするという指向によるものである．
+        NICハードウェアからの割込の禁止は，NICハードウェアの割込に関するレジスタが
+        制御している．しかし，本開発支援環境ではNICハードウェアからの
+        割込ではなく，開発支援OSからの割込(IPI)を禁止しなければならない．
+        このため，割込の禁止/許可を表すフラグを共有メモリに配置し，
+        開発支援OSと開発対象OSで参照可能にすることでこれを実現する．
+        フラグが更新されるのはNICドライバが割込を禁止/許可するタイミングと同じタイミングである．
+        開発支援OSはIPIを送信する直前にこのフラグを確認し，フラグが立っていればIPIを送信せず，
+        立っていなければIPIを送信する．
+    \item NICハードウェアの停止\\
+        本開発支援環境では基本的にNICハードウェアを使用しないがデバイスの認識時に限って使用している．
+        認識を終えるとNICハードウェアは動作する必要が無いため，NICドライバの初期化処理の
+        終了時に動作を停止させる．
+\end{enumerate}
+
+\section{改変箇所}\label{kaihenkasyo}
+\subsection{改変するドライバ}
+改変を加えるドライバはRTL8169である．
+ソースコードはdrivers/net/r8169.cである．
+
+\subsection{割込契機の変更}
+割込契機をIPIとし，指定したベクタ番号でNICドライバの割込ハンドラを動作させるよう改変を加える．
+NICドライバは，初期化処理である{\tt rtl8169\_open()}で割込ハンドラを登録する．
+このため，割込ハンドラを登録した直後に，
+登録した割込ハンドラのIRQ番号をベクタ管理表の指定したエントリに登録する処理を追加する．
+追加する処理を以下に示す．
+\begin{description}
+    \item[(追加)]ベクタ管理表の指定したエントリに登録したIRQ番号を格納する．
+\end{description}
+{\tt rtl8169\_open()}について，以下に示す．
+\begin{enumerate}
+    \item rtl8169\_open()
+        \begin{description}
+            \item[【形式】]\mbox{}\\
+                static int rtl8169\_open(struct net\_device *dev)
+            \item[【引数】]\mbox{}\\
+                struct net\_device *dev：ネットデバイス構造体
+            \item[【戻り値】]\mbox{}\\
+                成功：0\\
+                失敗：0以外
+            \item[【機能】]\mbox{}\\
+                パケットの送受信ディスクリプタやバッファの初期化等を行う．
+                また，割込ハンドラの登録を行う．
+                その他，ハードウェアの初期化を行う．
+        \end{description}
+\end{enumerate}
+
+\subsection{受信ディスクリプタ，受信バッファのアドレス変更}
+Mintの共有メモリにNICドライバの受信ディスクリプタと受信バッファを作成するよう改変を加える．
+受信ディスクリプタと受信バッファそれぞれの改変箇所を以下に示す．
+\begin{enumerate}
+    \item 受信ディスクリプタ\\
+        {\tt rtl8169\_open()}中で初期化される．
+        受信ディスクリプタの先頭アドレスを決定する際にMintの共有メモリのアドレスとなるよう
+        改変を加える．改変前と改変後を以下に示す．
+        \begin{description}
+            \item[(改変前)]受信ディスクリプタの先頭アドレスをDMA用のアドレスから選定し，決定する．
+            \item[(改変後)]受信ディスクリプタの先頭アドレスをMintの共有メモリのアドレスとする．
+        \end{description}
+    \item 受信バッファ\\
+        受信バッファのアドレスは受信ディスクリプタの初期化時に
+        決定され，受信ディスクリプタに格納される．
+        アドレスの決定は，{\tt rtl8169\_alloc\_rx\_data() }で行われる．
+        このため，この関数を改変し，受信バッファのアドレスをMintの共有メモリのアドレスとした．
+        改変前と改変後を以下に示す．
+        \begin{description}
+            \item[(改変前)]受信バッファのアドレスをDMA用のアドレスから選定し，決定する．
+            \item[(改変後)]受信バッファのアドレスをMintの共有メモリのアドレスとする．
+        \end{description}
+        {\tt rtl8169\_alloc\_rx\_data() }について，以下に示す．
+        \begin{enumerate}
+            \item rtl8169\_alloc\_rx\_data()
+                \begin{description}
+                    \item[【形式】]\mbox{}\\
+                        static struct sk\_buff *rtl8169\_alloc\_rx\_data(struct rtl8169\_private *tp, struct RxDesc *desc)
+                    \item[【引数】]\mbox{}\\
+                        struct rtl8169\_private *tp：NICドライバのプライベート構造体\\
+                        struct RxDesc *desc：受信ディスクリプタ
+                    \item[【戻り値】]\mbox{}\\
+                        成功：アロケートした領域へのポインタ\\
+                        失敗：NULL
+                    \item[【機能】]\mbox{}\\
+                        受信バッファのアドレスを決定し，受信ディスクリプタに受信バッファのアドレスを登録する．
+                        また，受信バッファの領域をアロケートする．
+                \end{description}
+        \end{enumerate}
+\end{enumerate}
+
+\subsection{割込ステータスの調整}
+NICドライバの割込ハンドラが動作した際，カーネルにパケットの処理を依頼し，
+割込を禁止する．パケットの処理が終わると割込を許可する．
+これを再現するため，NICの割込を禁止するタイミングで開発支援OSからの割込を
+禁止する必要がある．
+通常，NICのレジスタの値で割込の禁止/許可を示すが，これでは開発支援OSからの
+割込を禁止できない．
+このため，Mintの共有メモリに割込の禁止/許可を示すフラグを用意し，
+フラグが立っている場合は割込を禁止し，フラグが立っていなければ割込を許可することとした．
+このフラグの更新を行うのはNICドライバが割込を禁止/許可するタイミングと同じタイミングである．
+割込の禁止を行うのは{\tt rtl8169\_interrupt() }の処理中であり，許可を行うのは{\tt rtl8169\_poll() }の処理中である．
+追加した処理を以下に示す．
+\begin{description}
+    \item[(追加)]割込の禁止/許可のタイミングでフラグを更新する．
+\end{description}
+{\tt rtl8169\_interrupt() }と{\tt rtl8169\_poll() }について，以下に示す．
+\begin{enumerate}
+    \item rtl8169\_interrupt()
+        \begin{description}
+            \item[【形式】]\mbox{}\\
+                static irqreturn\_t rtl8169\_interrupt(int irq, void *dev\_instance)
+            \item[【引数】]\mbox{}\\
+                int irq：IRQ番号
+                void *dev\_instance：ネットデバイス構造体
+            \item[【戻り値】]\mbox{}\\
+                IRQ\_RETVAL()の戻り値
+            \item[【機能】]\mbox{}\\
+                パケットの処理をカーネルに依頼する．この際，NICからの割込を禁止する．
+        \end{description}
+
+    \item rtl8169\_poll()
+        \begin{description}
+            \item[【形式】]\mbox{}\\
+                static int rtl8169\_poll(struct napi\_struct *napi, int budget)
+            \item[【引数】]\mbox{}\\
+                struct napi\_struct *napi：NewAPI構造体\\
+                int budget：一度に処理できる最大のパケット数
+            \item[【戻り値】]\mbox{}\\
+                処理したパケット数
+            \item[【機能】]\mbox{}\\
+                パケット受信処理を呼び出し，パケットをソケットバッファに格納した後，上位層に上げる．
+                全てのパケットの処理が終われば割込を許可する．
+        \end{description}
+\end{enumerate}
+
+\subsection{NICハードウェアの停止}
+本開発支援環境では基本的にNICハードウェアは使用しないが，ネットワークインタフェースの
+起動時にのみ使用している．ネットワークインタフェースを起動しなければNICドライバを使用できないためである．
+ネットワークインタフェースを起動した後はNICハードウェアを使用する必要はないため，
+NICハードウェアの動作を停止させる．
+NICドライバにはNICハードウェアの動作を停止させる関数{\tt rtl8169\_asic\_down() }がある．
+この関数を{\tt rtl8169\_open() }の処理の最後に加えることにより，NICハードウェアの停止を行う．
+追加した処理を以下に示す．
+\begin{description}
+    \item[(追加)]初期化処理の最後で{\tt rtl8169\_asic\_down() }を動作させる．
+\end{description}
+{\tt rtl8169\_asic\_down() }について，以下に示す．
+\begin{enumerate}
+    \item rtl8169\_asic\_down()
+        \begin{description}
+            \item[【形式】]\mbox{}\\
+                static void rtl8169\_asic\_down(void \_\_iomem *ioaddr)
+            \item[【引数】]\mbox{}\\
+                void \_\_iomem *ioaddr：入出力アドレス
+            \item[【戻り値】]\mbox{}\\
+                なし
+            \item[【機能】]\mbox{}\\
+                NICハードウェアの各種レジスタをクリアし，停止させる．
+        \end{description}
+\end{enumerate}
+
+\section{改変量}
+それぞれの改変における改変を加えた関数と改変量をを表\ref{kaihenryou}に示す．
+
+\begin{table}[htbp]
+    \caption{改変内容と改変量について}
+    \label{kaihenryou}
+    \begin{center}
+        \begin{tabular}{l|l|l|l}   \hline \hline 
+            改変内容                   & 改変を加えた関数           & 追加行数 & 削除行数 \\ \hline
+            割込契機の変更             & rtl8169\_open()            & 1        & 0        \\ \hline
+            受信ディスクリプタ，       & rtl8169\_open()            & 1        & 2        \\
+            受信バッファのアドレス変更 & rtl8169\_alloc\_rx\_data() & 1        & 2        \\ \hline 
+            割込ステータスの調整       & rtl8169\_interrupt()       & 2        & 0        \\
+                                       & rtl8169\_poll()            & 2        & 0        \\ \hline 
+            NICハードウェアの停止      & rtl8169\_open()            & 1        & 0        \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\section{おわりに}
+本資料では，本開発支援環境におけるNICドライバの改変目的と改変箇所について
+まとめた．今後は，GitHubにおけるNICドライバの過去のコミットから修正された
+バグを調査し，本開発支援環境で再現できるバグとそうでないバグを仕分ける．
+これにより，開発支援環境に追加すべき機能をまとめる．
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}
+
+

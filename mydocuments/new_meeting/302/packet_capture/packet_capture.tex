@@ -1,0 +1,168 @@
+% Created 2013-12-20 金 04:52
+\documentclass[12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{comment}
+%\usepackage{setspace}
+%%\date{\today}
+%\title{}
+\textheight = 25truecm
+\textwidth = 18truecm
+\topmargin = -1.5truecm
+\oddsidemargin = -1truecm
+\evensidemargin = -1truecm
+\marginparwidth = -1truecm
+\usepackage{nutils}
+\def\theenumii{\Alph{enumii}}
+\def\theenumiii{\alph{enumiii}}
+\def\labelenumi{(\theenumi)}
+\def\labelenumiii{(\theenumiii)}
+%\setstretch{0.9}
+\begin{document}
+
+
+%\maketitle
+%\tableofcontents
+
+\begin{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%タイトル                         %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    {\LARGE NICドライバ改変によるパケットキャプチャ方法}
+\end{center}
+
+\begin{flushright}
+    2016/5/31\\
+    藤田将輝
+\end{flushright}
+%%%%%%%%%%%%%%%%%%1章%%%%%%%%%%%%%%%%%%%
+\section{はじめに}
+開発支援環境でパケットを擬似するにあたって，NICがメモリに配置したパケットをキャプチャし，
+その構成を確認した．
+本資料では，NICドライバを改変することによってパケットをキャプチャし，
+パケットの内容を確認する方法について示す．
+
+\section{目的}
+開発支援環境はNICハードウェアのエミュレートを行う．
+NICハードウェアの機能の1つにパケットをメモリに配置する機能がある．
+この機能を開発支援OSが再現する際，パケットを作成する必要がある．
+パケットを作成する機能を実現するにあたって，
+実際のNICがメモリに配置するパケットの構成を確認した．
+具体的には，NICドライバを改変し，NICドライバがメモリからパケットを取得するタイミングで
+あらかじめ確保した配列にパケットを保存し，任意のタイミングでその内容を
+確認する機構を実装し，確認した．
+
+\section{実装環境}
+パケットキャプチャ機構の実装環境を表\ref{kankyou}に示す．
+
+\begin{table}[htbp]
+    \caption{実験環境}
+    \label{kankyou}
+    \begin{center}
+        \begin{tabular}{l|l}   \hline \hline 
+            項目名      & 環境    \\ \hline
+            OS          & Fedora14 x86\_64(Linux 3.0.8)  \\ 
+            NICドライバ & RTL8169    \\ 
+            ソースコード& r8169.c \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+\section{パケットキャプチャ機構の処理流れ}\label{syorinagare}
+\insertfigure[0.5]{fig:packet-capture}{fig1}{パケットキャプチャの処理流れ}{ipi route}
+NICドライバを改変し，あらかじめ確保した配列に最新10個のパケットを格納するものとする．
+NICがパケットを受信してからパケットをキャプチャするまでの処理流れについて図\ref{fig:packet-capture}に示し，以下で説明する．
+\begin{enumerate}
+    \item NICがパケットを受信し，パケットを受信バッファに格納する．
+    \item NICドライバが動作し，受信バッファに格納されているパケットを
+        ソケットバッファに複写する．
+    \item ソケットバッファに格納した直後にカーネルに確保した配列にも
+        パケットを複写する．
+    \item ソケットバッファは上位層に転送される．
+    \item カーネルに確保した配列に格納されたパケットはシステムコールにより，
+        ユーザ空間に複写され，内容を確認できる．
+\end{enumerate}
+
+\section{実装}
+\ref{syorinagare}章で示したパケットキャプチャを実装するにあたり，以下の機能を実装した．
+ソースコードは\mbox{GitHub}における，\mbox{fujita-m/Linux-3.0.8}の\mbox{packet\_capture}ブランチの
+17326f3bbe35ad1e6a72286637d\newline d2df90d19f975 (コミットID)にある．
+なお，システムコールの追加方法については「＜new 249-06＞Linuxカーネルへのシステムコール実装手順書」を
+参考にすると良い．
+\begin{enumerate}
+    \item カーネルに配列を確保\\
+        NICが受信したパケットを保存しておくため，カーネルに配列を確保する．
+        今回は，受信した最新の10個のパケットを確保することとする．
+        また，1つのパケットサイズの上限はMTUである1500Bとしている．
+        この機能はarch/x86/kernel/sys\_packet\_capture.cに記述している．
+    \item 確保した配列にパケットを格納\\
+        NICドライバがパケットをソケットバッファに複写するタイミングで
+        同じパケットを確保した配列に格納する．
+        この機能はdrivers/net/r8169.cに記述している．
+    \item システムコールによりパケットをユーザ空間に複写\\
+        配列へのポインタを受け取り，保存しているパケットを複写する
+        システムコールを実装する．
+        これにより，受信した最新10個のパケットをユーザ空間で確認できる．
+        この機能はarch/x86/kernel/sys\_packet\_capture.cに記述している．
+\end{enumerate}
+
+\section{動作}
+実装したシステムコールを呼び出すアプリケーションを作成し，
+実装したパケットキャプチャ機能を動作させた際，以下の結果が得られた．
+なお，キャプチャしたパケットの先頭から34Bまでを表示している．
+\begin{verbatim}
+--------------------------------------------------------------------
+1  ----start----
+2  20cf303e497a8851fb677c8608004500005c7f7c40008006c17fac1530e0ac153095
+3  ----start----
+4  20cf303e497a8851fb677c860800450000287f7940008006c1b6ac1530e0ac153095
+5  ----start----
+6  ffffffffffff480fcf3844a008060001080006040001480fcf3844a0ac1530c30000
+7  ----start----
+8  20cf303e497a8851fb677c8608004500005c7f7a40008006c181ac1530e0ac153095
+9  ----start----
+10 ffffffffffff8851fb6ece1f080600010800060400018851fb6ece1fac1530100000
+11 ----start----
+12 20cf303e497a8851fb677c860800450000287f7b40008006c1b4ac1530e0ac153095
+13 ----start----
+14 ffffffffffff8851fb6ecdd1080600010800060400018851fb6ecdd1ac15304c0000
+15 ----start----
+16 ffffffffffff8851fb677c78080600010800060400018851fb677c78ac1530e70000
+17 ----start----
+18 ffffffffffff74d4351405920806000108000604000174d435140592962e01050000
+19 ----start----
+20 ffffffffffff8851fb6ecdd308004500004e29e30000801187eaac1530a7ac15ffff
+--------------------------------------------------------------------
+\end{verbatim}
+上記の結果を得た際，SSHを用いて実験用計算機と文書作成用計算機とで
+通信を行なっていた．パケットのEtherヘッダには，宛先MACアドレスと
+差出元MACアドレスが含まれており，キャプチャしたパケットのEtherヘッダには
+実験用計算機と文書作成用計算機のMACアドレスが含まれていた(2,4,8,12行目の先頭から12B)．
+また，IPヘッダには宛先IPアドレスと差出元IPアドレスが含まれており，
+キャプチャしたパケットのIPヘッダには実験用計算機と文書用計算機に
+割り当てたIPアドレスが含まれていた(2,4,8,12行目の末尾から8B)．
+これらにより，正しくパケットをキャプチャできていると言える．
+
+\section{おわりに}
+本資料では，NICを改変することにより，パケットをキャプチャする方法について
+示した．これを用いることで，パケットの構成を知ることができる．
+
+\end{document}
+
+%\begin{table}[htbp]
+%    \caption{実験環境}
+%    \label{kankyou}
+%    \begin{center}
+%        \begin{tabular}{l|l}   \hline \hline 
+%            項目名      & 環境    \\ \hline
+%            OS          & Fedora14 x86\_64(Mint 3.0.8)  \\ 
+%            CPU         & Intel(R) Core(TM) Core i7-870 @ 2.93GHz \\ 
+%            NICドライバ & RTL8169    \\ 
+%            ソースコード& r8169.c \\ \hline
+%
+%        \end{tabular}
+%    \end{center}
+%\end{table}
+%
+%\insertfigure[0.8]{fig:frame}{fig1}{パケットの構成}{ipi route}
+
+
